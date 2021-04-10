@@ -2,8 +2,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as theme from './../constants/global';
 
-import Home from '../components/screens/Home';
-import Login from '../components/screens/Login';
+import Home from 'components/screens/Home';
+import Login from 'components/screens/Login';
 
 const Stack = createStackNavigator();
 
