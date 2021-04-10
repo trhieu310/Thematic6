@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import * as theme from './../constants/global';
 
@@ -25,10 +26,18 @@ const LoginStackNavigator = () => {
 
 const HomeStackNavigator = () => {
 	return (
-		<Stack.Navigator screenOptions={screenOptionStyle}>
-			<Stack.Screen name="Home" component={Home} />
+		<Stack.Navigator screenOptions={screenOptionStyle}
+		>
+			<Stack.Screen 
+				name="Home" 
+				component={Home} 
+			/>
 		</Stack.Navigator>
 	);
 };
+
+const styles = StyleSheet.create({
+	
+})
 
 export { HomeStackNavigator, LoginStackNavigator };

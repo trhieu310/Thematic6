@@ -12,6 +12,7 @@ target 'Thematic6' do
     :hermes_enabled => false
   )
 
+
   target 'Thematic6Tests' do
     inherit! :complete
     # Pods for testing
