@@ -1,13 +1,14 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { HomeStackNavigator } from './StackNavigation';
+import { HomeStackNavigator, ScanStackNavigator } from './StackNavigation';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
 	return (
-		<Tab.Navigator>
+		<Tab.Navigator initialRouteName="Home">
+			<Tab.Screen name="Scan" component={ScanStackNavigator} />
 			<Tab.Screen name="Home" component={HomeStackNavigator} />
 		</Tab.Navigator>
 	);

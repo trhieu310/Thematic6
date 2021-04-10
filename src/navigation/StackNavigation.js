@@ -4,6 +4,7 @@ import * as theme from './../constants/global';
 
 import Home from 'components/screens/Home';
 import Login from 'components/screens/Login';
+import Scanner from 'components/screens/Scanner';
 
 const Stack = createStackNavigator();
 
@@ -31,4 +32,12 @@ const HomeStackNavigator = () => {
 	);
 };
 
-export { HomeStackNavigator, LoginStackNavigator };
+const ScanStackNavigator = () => {
+	return (
+		<Stack.Navigator screenOptions={screenOptionStyle}>
+			<Stack.Screen name="Scan" component={Scanner} />
+		</Stack.Navigator>
+	);
+};
+
+export { HomeStackNavigator, LoginStackNavigator, ScanStackNavigator };
