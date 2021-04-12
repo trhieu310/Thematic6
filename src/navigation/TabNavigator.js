@@ -1,14 +1,17 @@
 import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity, Platform} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomeStackNavigator } from './StackNavigation';
-import Home from 'components/screens/Home';
-import History from 'components/screens/History'
-import Search from 'components/screens/Search';
-import Scan from 'components/screens/Scan';
-import Personal from 'components/screens/Personal';
+import { createStackNavigator } from '@react-navigation/stack';
+import { 
+	HomeStackNavigator,
+	SearchStackNavigator,
+	ScanStackNavigator,
+	HistoryStackNavigator,
+	PersonalStackNavigator
+} from './StackNavigation'
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const CustomTabBarButton = ({children, onPress}) => {
 	return (<TouchableOpacity
@@ -28,7 +31,7 @@ const BottomTabNavigator = () => {
 				showLabel: false,
 				style: {
 					position: 'absolute',
-					bottom: 15,
+					bottom: Platform.OS === 'ios' ? 15 : 10,
 					left: 10,
 					right: 10,
 					elevation: 0,
@@ -44,7 +47,7 @@ const BottomTabNavigator = () => {
 			>
 			<Tab.Screen
 				name="Home"
-				component={Home}
+				component={HomeStackNavigator}
 				options={{
 					tabBarIcon: ({ focused }) => {
 						return <View
@@ -65,7 +68,7 @@ const BottomTabNavigator = () => {
 			/>
 			<Tab.Screen
 				name="Search"
-				component={Search}
+				component={SearchStackNavigator}
 				options={{
 					tabBarIcon: ({ focused }) => {
 						return <View
@@ -86,7 +89,7 @@ const BottomTabNavigator = () => {
 			/>
 			<Tab.Screen
 				name="Scan"
-				component={Scan}
+				component={ScanStackNavigator}
 				options={{
 					tabBarIcon: ({ focused }) => (
 						<Image 
@@ -103,7 +106,7 @@ const BottomTabNavigator = () => {
 			/>
 			<Tab.Screen
 				name="History"
-				component={History}
+				component={HistoryStackNavigator}
 				options={{
 					tabBarIcon: ({ focused }) => {
 						return <View
@@ -124,7 +127,7 @@ const BottomTabNavigator = () => {
 			/>
 			<Tab.Screen
 				name="Personal"
-				component={Personal}
+				component={PersonalStackNavigator}
 				options={{
 					tabBarIcon: ({ focused }) => {
 						return <View
@@ -165,27 +168,27 @@ const styles = StyleSheet.create({
 	},
 	bgFocus: {
 		backgroundColor: '#DC0048',
-		shadowColor: '#999',
+		shadowColor: '#555',
 		shadowOffset: {
-			width: -3,
-			height: 10,
+			width: Platform.OS === 'ios' ? -1 : -3,
+			height: Platform.OS === 'ios' ? 2 : 6,
 		},
-		shadowOpacity: 0.25,
-		shadowRadius: 3.5,
-		elevation: 3,
+		shadowOpacity: 0.5,
+		shadowRadius: Platform.OS === 'ios' ? 3.5: 5,
+		elevation: Platform.OS === 'ios' ? 3 : 5,
 	},
 	bgNoneFocus: {
 		backgroundColor: '#fff'
 	},
 	shadow: {
-		shadowColor: '#999',
+		shadowColor: '#555',
 		shadowOffset: {
-			width: -3,
-			height: 4,
+			width: Platform.OS === 'ios' ? -1 : -3,
+			height: Platform.OS === 'ios' ? 2 : 6,
 		},
 		shadowOpacity: 0.25,
-		shadowRadius: 3.5,
-		elevation: 5,
+		shadowRadius: Platform.OS === 'ios' ? 3.5: 5,
+		elevation: Platform.OS === 'ios' ? 3 : 5,
 	},
 	customButton: {
 		top: Platform.OS === 'ios' ? -15 : 0,
