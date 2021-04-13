@@ -5,6 +5,7 @@ import * as theme from './../constants/global';
 
 import Home from 'components/screens/Home';
 import Login from 'components/screens/Login';
+import Scanner from 'components/screens/Scanner';
 import Search from 'components/screens/Search';
 import Scan from 'components/screens/Scan';
 import History from 'components/screens/History';
@@ -71,7 +72,7 @@ const ScanStackNavigator = () => {
 		>
 			<Stack.Screen 
 				name="Scan" 
-				component={Scan} 
+				component={Scanner} 
 			/>
 		</Stack.Navigator>
 	)

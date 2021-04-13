@@ -26,7 +26,7 @@ const CustomTabBarButton = ({children, onPress}) => {
 
 const BottomTabNavigator = () => {
 	return (
-		<Tab.Navigator
+		<Tab.Navigator initialRouteName="Home"
 			tabBarOptions={{
 				showLabel: false,
 				style: {
