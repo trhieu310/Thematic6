@@ -1,25 +1,26 @@
-import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import React from 'react'
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
 import Header from '../items/heads/Header'
 
-const History = ({navigation}) => {
-	return (
-		<SafeAreaView style={styles.container}>
+const Personal = ({navigation}) => {
+    return (
+        <SafeAreaView style={styles.container}>
             <Header 
 				navigation={navigation} 
-				search
 				back 
-				title='History'
+				title='Profile'
 			/>
             <View style={styles.wrapperContent}>
-                <Text>History</Text>
+                <Text>Profile</Text>
             </View>
         </SafeAreaView>
-	);
-};
+    )
+}
+
+export default Personal
 
 const styles = StyleSheet.create({
-	container: {
+    container: {
 		flex: 1
 	},
 	wrapperContent: {
@@ -29,6 +30,4 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
-});
-
-export default History;
+})

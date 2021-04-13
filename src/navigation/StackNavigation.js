@@ -1,10 +1,16 @@
 import React from 'react';
+import { StyleSheet } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import * as theme from './../constants/global';
 
 import Home from 'components/screens/Home';
 import Login from 'components/screens/Login';
 import Scanner from 'components/screens/Scanner';
+import Search from 'components/screens/Search';
+import Scan from 'components/screens/Scan';
+import History from 'components/screens/History';
+import Personal from 'components/screens/Personal';
+import LoadingFirst from 'components/screens/Loading/LoadingFirst';
 
 const Stack = createStackNavigator();
 
@@ -26,18 +32,93 @@ const LoginStackNavigator = () => {
 
 const HomeStackNavigator = () => {
 	return (
-		<Stack.Navigator screenOptions={screenOptionStyle}>
-			<Stack.Screen name="Home" component={Home} />
+		<Stack.Navigator 
+			initialRouteName="Home"
+			screenOptions={{
+				headerShown: false
+			}}
+		>
+			<Stack.Screen 
+				name="Home" 
+				component={Home} 
+			/>
 		</Stack.Navigator>
 	);
 };
+
+const SearchStackNavigator = () => {
+	return (
+		<Stack.Navigator 
+			initialRouteName="Search"
+			screenOptions={{
+				headerShown: false
+			}}
+		>
+			<Stack.Screen 
+				name="Search" 
+				component={Search} 
+			/>
+		</Stack.Navigator>
+	)
+}
 
 const ScanStackNavigator = () => {
 	return (
-		<Stack.Navigator screenOptions={screenOptionStyle}>
-			<Stack.Screen name="Scan" component={Scanner} />
+		<Stack.Navigator 
+			initialRouteName="Scan"
+			screenOptions={{
+				headerShown: false
+			}}
+		>
+			<Stack.Screen 
+				name="Scan" 
+				component={Scanner} 
+			/>
 		</Stack.Navigator>
-	);
-};
+	)
+}
 
-export { HomeStackNavigator, LoginStackNavigator, ScanStackNavigator };
+const HistoryStackNavigator = () => {
+	return (
+		<Stack.Navigator 
+			initialRouteName="History"
+			screenOptions={{
+				headerShown: false
+			}}
+		>
+			<Stack.Screen 
+				name="History" 
+				component={History} 
+			/>
+		</Stack.Navigator>
+	)
+}
+
+const PersonalStackNavigator = () => {
+	return (
+		<Stack.Navigator 
+			initialRouteName="Personal"
+			screenOptions={{
+				headerShown: false
+			}}
+		>
+			<Stack.Screen 
+				name="Personal" 
+				component={Personal} 
+			/>
+		</Stack.Navigator>
+	)
+}
+
+const styles = StyleSheet.create({
+	
+})
+
+export { 
+	HomeStackNavigator, 
+	LoginStackNavigator, 
+	SearchStackNavigator,
+	ScanStackNavigator,
+	HistoryStackNavigator,
+	PersonalStackNavigator 
+};
