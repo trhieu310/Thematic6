@@ -8,4 +8,5 @@ module.exports = {
 	useTabs: true,
 	bracketSpacing: true,
 	semi: true,
+	printWidth: 80,
 };
