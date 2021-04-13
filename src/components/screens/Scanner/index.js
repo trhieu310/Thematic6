@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import * as theme from 'constants/global';
 import { RNCamera } from 'react-native-camera';
 import useCameraPermission from 'hook/useCameraPermission';
+import Header from 'components/items/heads/Header';
 
 const Scanner = ({ navigation }) => {
 	const [cameraFacing, setCameraFacing] = useState('back');
@@ -80,6 +81,7 @@ const Scanner = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
+			<Header back navigation={navigation} />
 			<View style={[styles.container, styles.backgroundContainer]}>
 				<RNCamera
 					style={styles.container}
