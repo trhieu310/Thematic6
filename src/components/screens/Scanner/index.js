@@ -11,10 +11,13 @@ import Header from 'components/items/heads/Header';
 
 const Scanner = ({ navigation }) => {
 	const [cameraFacing, setCameraFacing] = useState('back');
-	const [cameraReady, setCameraReady] = useState(false);
+	// const [cameraReady, setCameraReady] = useState(false);
+	// const [cameraChanging, setCameraChanging] = useState(false);
 	const [barcodeRecognized, setBarcodeRecognized] = useState({});
 	let camera = null;
-	// const [cameraChanging, setCameraChanging] = useState(false);
+
+	const isFocused = useIsFocused();
+	const granted = useCameraPermission();
 
 	const handleChangeCameraType = () => {
 		switch (cameraFacing) {
@@ -33,34 +36,7 @@ const Scanner = ({ navigation }) => {
 		}
 	};
 
-	const renderBoundingBarcode = () => {
-		const { target, barcodes = [] } = barcodeRecognized;
-		return barcodes.map(barcode => {
-			const { bounds, type, data, rawData } = barcode;
-			console.warn(barcode);
-
-			if (type !== 'QR_CODE') return null;
-
-			return (
-				<View
-					style={{
-						...styles.boundingBarcode,
-						...bounds.size,
-						left: bounds.origin.x,
-						top: bounds.origin.y,
-					}}>
-					<Text>{data}</Text>
-				</View>
-			);
-		});
-	};
-	// const { bounds, type, data, rawData } = barcodes;
-
-	const isFocused = useIsFocused();
-
 	if (!isFocused || !navigation.isFocused) return null;
-
-	const granted = useCameraPermission();
 
 	if (granted === 'pending') {
 		return (
@@ -77,7 +53,28 @@ const Scanner = ({ navigation }) => {
 			</View>
 		);
 	}
-	// console.log('camera focused', isFocused);
+
+	const renderBoundingBarcode = () => {
+		const { target, barcodes = [] } = barcodeRecognized;
+		return barcodes.map(barcode => {
+			const { bounds, type, data, rawData } = barcode;
+			// console.warn(barcode);
+
+			if (type !== 'QR_CODE') return null;
+
+			return (
+				<View
+					style={{
+						...styles.boundingBarcode,
+						...bounds.size,
+						left: bounds.origin.x,
+						top: bounds.origin.y,
+					}}>
+					<Text>{data}</Text>
+				</View>
+			);
+		});
+	};
 
 	return (
 		<View style={styles.container}>
@@ -116,12 +113,12 @@ const Scanner = ({ navigation }) => {
 						<View style={styles.centerItem}>
 							<Button
 								onPress={handleChangeCameraType}
-								type="clear"
+								type='clear'
 								icon={
 									<Icon
 										// disabled={cameraChanging}
-										type="font-awesome-5"
-										name="sync"
+										type='font-awesome-5'
+										name='sync'
 										color={theme.colors.WHITE}
 										size={34}
 									/>
@@ -134,11 +131,11 @@ const Scanner = ({ navigation }) => {
 							<Button
 								// style={styles.buttonIcon}
 								onPress={takePicture}
-								type="clear"
+								type='clear'
 								icon={
 									<Icon
-										type="font-awesome-5"
-										name="circle"
+										type='font-awesome-5'
+										name='circle'
 										color={theme.colors.WHITE}
 										size={80}
 										solid
@@ -150,11 +147,11 @@ const Scanner = ({ navigation }) => {
 					<View style={styles.gridItem}>
 						<View style={[styles.centerItem, styles.buttonIcon]}>
 							<Button
-								type="clear"
+								type='clear'
 								icon={
 									<Icon
-										type="font-awesome-5"
-										name="folder-open"
+										type='font-awesome-5'
+										name='folder-open'
 										color={theme.colors.WHITE}
 										size={34}
 									/>
