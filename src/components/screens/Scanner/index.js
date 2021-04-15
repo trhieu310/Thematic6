@@ -60,6 +60,7 @@ const Scanner = ({ navigation }) => {
 
 	if (!isFocused || !navigation.isFocused) return null;
 
+	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const granted = useCameraPermission();
 
 	if (granted === 'pending') {
@@ -116,12 +117,12 @@ const Scanner = ({ navigation }) => {
 						<View style={styles.centerItem}>
 							<Button
 								onPress={handleChangeCameraType}
-								type="clear"
+								type='clear'
 								icon={
 									<Icon
 										// disabled={cameraChanging}
-										type="font-awesome-5"
-										name="sync"
+										type='font-awesome-5'
+										name='sync'
 										color={theme.colors.WHITE}
 										size={34}
 									/>
@@ -134,11 +135,11 @@ const Scanner = ({ navigation }) => {
 							<Button
 								// style={styles.buttonIcon}
 								onPress={takePicture}
-								type="clear"
+								type='clear'
 								icon={
 									<Icon
-										type="font-awesome-5"
-										name="circle"
+										type='font-awesome-5'
+										name='circle'
 										color={theme.colors.WHITE}
 										size={80}
 										solid
@@ -150,11 +151,11 @@ const Scanner = ({ navigation }) => {
 					<View style={styles.gridItem}>
 						<View style={[styles.centerItem, styles.buttonIcon]}>
 							<Button
-								type="clear"
+								type='clear'
 								icon={
 									<Icon
-										type="font-awesome-5"
-										name="folder-open"
+										type='font-awesome-5'
+										name='folder-open'
 										color={theme.colors.WHITE}
 										size={34}
 									/>

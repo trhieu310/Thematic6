@@ -1,19 +1,25 @@
 import Header from 'components/items/heads/Header';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, ImageBackground } from 'react-native';
+import {
+	StyleSheet,
+	Text,
+	View,
+	SafeAreaView,
+	Button,
+	Image,
+	ImageBackground,
+} from 'react-native';
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
 	return (
 		<SafeAreaView style={styles.container}>
-			<Header 
-				navigation={navigation} 
-				search
-				back 
-				title='Home' 
-			/>
+			<Header navigation={navigation} search back title='Home' />
 			<View style={styles.wrapperContent}>
 				<View styles={styles.homeImage}>
-					<ImageBackground source={require('../../../assets/images/home_bg.jpg')} style={styles.homeBg} />
+					<ImageBackground
+						source={require('../../../assets/images/home_bg.jpg')}
+						style={styles.homeBg}
+					/>
 				</View>
 				<View style={styles.homePage}>
 					<Text>Home</Text>
@@ -27,11 +33,11 @@ export default Home;
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
 	},
 	wrapperContent: {
 		flex: 1,
-		backgroundColor: '#fff'
+		backgroundColor: '#fff',
 	},
 	homeImage: {
 		flex: 1,
@@ -47,6 +53,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		marginTop: 230,
 		paddingHorizontal: 7,
-		paddingVertical: 5
-	}
+		paddingVertical: 5,
+	},
 });

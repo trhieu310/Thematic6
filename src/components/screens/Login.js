@@ -34,88 +34,132 @@ const Login = ({ navigation }) => {
 					<View style={styles.centerizedView}>
 						<View style={styles.authBox}>
 							<View style={styles.logoBox}>
-								<Icon color="#fff" name="plane-departure" type="font-awesome-5" size={50} />
+								<Icon
+									color='#fff'
+									name='plane-departure'
+									type='font-awesome-5'
+									size={50}
+								/>
 							</View>
 							<Text style={styles.loginTitleText}>Login</Text>
 							<View style={styles.hr} />
 							<View
 								style={[
 									styles.inputView,
-									!isEmailValid(email) && email.length > 0 ? styles.wrong : '',
+									!isEmailValid(email) && email.length > 0
+										? styles.wrong
+										: '',
 								]}>
 								<Icon
 									style={{ paddingHorizontal: 4 }}
-									name="envelope"
-									type="font-awesome"
-									color="#d9d9d9"
+									name='envelope'
+									type='font-awesome'
+									color='#d9d9d9'
 									size={22}
 								/>
 								<TextInput
 									style={styles.input}
-									placeholder="Email"
-									placeholderTextColor="#d9d9d9"
-									keyboardType="email-address"
-									textContentType="emailAddress"
-									autoCapitalize="none"
-									autoCompleteType="email"
-									returnKeyType="next"
+									placeholder='Email'
+									placeholderTextColor='#d9d9d9'
+									keyboardType='email-address'
+									textContentType='emailAddress'
+									autoCapitalize='none'
+									autoCompleteType='email'
+									returnKeyType='next'
 									onChangeText={text => setEmail(text)}
 								/>
 							</View>
 							<View style={styles.inputView}>
 								<Icon
 									style={{ paddingHorizontal: 4 }}
-									name="key"
-									type="font-awesome-5"
-									color="#d9d9d9"
+									name='key'
+									type='font-awesome-5'
+									color='#d9d9d9'
 									size={22}
 								/>
 								<TextInput
 									style={styles.input}
-									placeholder="Password"
-									placeholderTextColor="#d9d9d9"
+									placeholder='Password'
+									placeholderTextColor='#d9d9d9'
 									secureTextEntry={!showLoginPassword}
-									textContentType="password"
-									returnKeyType="done"
+									textContentType='password'
+									returnKeyType='done'
 									onChangeText={text => setPassword(text)}
 								/>
 								<TouchableOpacity
 									style={{ paddingVertical: 4 }}
 									onPress={() => {
-										setShowLoginPassword(!showLoginPassword);
+										setShowLoginPassword(
+											!showLoginPassword,
+										);
 									}}>
 									<Icon
 										style={{ paddingHorizontal: 4 }}
-										name={!showLoginPassword ? 'eye' : 'eye-slash'}
-										type="font-awesome"
-										color="#d9d9d9"
+										name={
+											!showLoginPassword
+												? 'eye'
+												: 'eye-slash'
+										}
+										type='font-awesome'
+										color='#d9d9d9'
 										size={22}
 									/>
 								</TouchableOpacity>
 							</View>
-							<TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Home')}>
-								<Text style={styles.loginButtonText}>Login</Text>
+							<TouchableOpacity
+								style={styles.loginButton}
+								onPress={() => navigation.navigate('Home')}>
+								<Text style={styles.loginButtonText}>
+									Login
+								</Text>
 							</TouchableOpacity>
 							<View style={styles.divided}>
 								<Text style={styles.dividedText}>OR</Text>
 							</View>
 							<View style={styles.socialSignin}>
 								<TouchableOpacity style={styles.socialButton}>
-									<View style={[styles.logoSocial, styles.ggSocial]}>
-										<Icon color="#fff" name="google" type="font-awesome-5" size={25} />
+									<View
+										style={[
+											styles.logoSocial,
+											styles.ggSocial,
+										]}>
+										<Icon
+											color='#fff'
+											name='google'
+											type='font-awesome-5'
+											size={25}
+										/>
 									</View>
 								</TouchableOpacity>
 								<TouchableOpacity style={styles.socialButton}>
-									<View style={[styles.logoSocial, styles.fbSocial]}>
-										<Icon color="#fff" name="facebook-f" type="font-awesome-5" size={25} />
+									<View
+										style={[
+											styles.logoSocial,
+											styles.fbSocial,
+										]}>
+										<Icon
+											color='#fff'
+											name='facebook-f'
+											type='font-awesome-5'
+											size={25}
+										/>
 									</View>
 								</TouchableOpacity>
 							</View>
 							<TouchableOpacity>
-								<Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+								<Text style={styles.forgotPasswordText}>
+									Forgot Password?
+								</Text>
 							</TouchableOpacity>
-							<TouchableOpacity style={styles.registerSwitch} onPress={() => setActiveTab('SignUp')}>
-								<Icon color="#fff" name="swap-horiz" type="material" size={25} />
+							<TouchableOpacity
+								style={styles.registerSwitch}
+								onPress={() => setActiveTab('SignUp')}>
+								<Icon
+									color='#fff'
+									name='swap-horiz'
+									type='material'
+									size={25}
+								/>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -142,103 +186,143 @@ const Login = ({ navigation }) => {
 					<View style={styles.centerizedView}>
 						<View style={styles.authBox}>
 							<View style={styles.logoBox}>
-								<Icon color="#fff" name="plane-departure" type="font-awesome-5" size={50} />
+								<Icon
+									color='#fff'
+									name='plane-departure'
+									type='font-awesome-5'
+									size={50}
+								/>
 							</View>
 							<Text style={styles.loginTitleText}>Register</Text>
 							<View style={styles.hr} />
 							<View style={styles.inputView}>
 								<Icon
 									style={{ paddingHorizontal: 4 }}
-									name="user-o"
-									type="font-awesome"
-									color="#d9d9d9"
+									name='user-o'
+									type='font-awesome'
+									color='#d9d9d9'
 									size={22}
 								/>
 								<TextInput
 									style={styles.input}
-									placeholder="Name"
-									placeholderTextColor="#d9d9d9"
-									textContentType="name"
-									autoCapitalize="none"
-									returnKeyType="next"
+									placeholder='Name'
+									placeholderTextColor='#d9d9d9'
+									textContentType='name'
+									autoCapitalize='none'
+									returnKeyType='next'
 									onChangeText={text => setName(text)}
 								/>
 							</View>
 							<View
 								style={[
 									styles.inputView,
-									!isEmailValid(email) && email.length > 0 ? styles.wrong : '',
+									!isEmailValid(email) && email.length > 0
+										? styles.wrong
+										: '',
 								]}>
 								<Icon
 									style={{ paddingHorizontal: 4 }}
-									name="envelope"
-									type="font-awesome"
-									color="#d9d9d9"
+									name='envelope'
+									type='font-awesome'
+									color='#d9d9d9'
 									size={22}
 								/>
 								<TextInput
 									style={styles.input}
-									placeholder="Email"
-									placeholderTextColor="#d9d9d9"
-									keyboardType="email-address"
-									textContentType="emailAddress"
-									autoCapitalize="none"
-									autoCompleteType="email"
-									returnKeyType="next"
+									placeholder='Email'
+									placeholderTextColor='#d9d9d9'
+									keyboardType='email-address'
+									textContentType='emailAddress'
+									autoCapitalize='none'
+									autoCompleteType='email'
+									returnKeyType='next'
 									onChangeText={text => setEmail(text)}
 								/>
 							</View>
 							<View style={styles.inputView}>
 								<Icon
 									style={{ paddingHorizontal: 4 }}
-									name="key"
-									type="font-awesome-5"
-									color="#d9d9d9"
+									name='key'
+									type='font-awesome-5'
+									color='#d9d9d9'
 									size={22}
 								/>
 								<TextInput
 									style={styles.input}
-									placeholder="Password"
-									placeholderTextColor="#d9d9d9"
+									placeholder='Password'
+									placeholderTextColor='#d9d9d9'
 									secureTextEntry={!showLoginPassword}
-									textContentType="password"
-									returnKeyType="done"
+									textContentType='password'
+									returnKeyType='done'
 									onChangeText={text => setPassword(text)}
 								/>
 								<TouchableOpacity
 									style={{ paddingVertical: 4 }}
 									onPress={() => {
-										setShowLoginPassword(!showLoginPassword);
+										setShowLoginPassword(
+											!showLoginPassword,
+										);
 									}}>
 									<Icon
 										style={{ paddingHorizontal: 4 }}
-										name={!showLoginPassword ? 'eye' : 'eye-slash'}
-										type="font-awesome"
-										color="#d9d9d9"
+										name={
+											!showLoginPassword
+												? 'eye'
+												: 'eye-slash'
+										}
+										type='font-awesome'
+										color='#d9d9d9'
 										size={22}
 									/>
 								</TouchableOpacity>
 							</View>
 							<TouchableOpacity style={styles.loginButton}>
-								<Text style={styles.loginButtonText}>Register</Text>
+								<Text style={styles.loginButtonText}>
+									Register
+								</Text>
 							</TouchableOpacity>
 							<View style={styles.divided}>
 								<Text style={styles.dividedText}>OR</Text>
 							</View>
 							<View style={styles.socialSignin}>
 								<TouchableOpacity style={styles.socialButton}>
-									<View style={[styles.logoSocial, styles.ggSocial]}>
-										<Icon color="#fff" name="google" type="font-awesome-5" size={25} />
+									<View
+										style={[
+											styles.logoSocial,
+											styles.ggSocial,
+										]}>
+										<Icon
+											color='#fff'
+											name='google'
+											type='font-awesome-5'
+											size={25}
+										/>
 									</View>
 								</TouchableOpacity>
 								<TouchableOpacity style={styles.socialButton}>
-									<View style={[styles.logoSocial, styles.fbSocial]}>
-										<Icon color="#fff" name="facebook-f" type="font-awesome-5" size={25} />
+									<View
+										style={[
+											styles.logoSocial,
+											styles.fbSocial,
+										]}>
+										<Icon
+											color='#fff'
+											name='facebook-f'
+											type='font-awesome-5'
+											size={25}
+										/>
 									</View>
 								</TouchableOpacity>
 							</View>
-							<TouchableOpacity style={styles.registerSwitch} onPress={() => setActiveTab('SignIn')}>
-								<Icon color="#fff" name="swap-horiz" type="material" size={25} />
+							<TouchableOpacity
+								style={styles.registerSwitch}
+								onPress={() => setActiveTab('SignIn')}>
+								<Icon
+									color='#fff'
+									name='swap-horiz'
+									type='material'
+									size={25}
+								/>
 							</TouchableOpacity>
 						</View>
 					</View>
