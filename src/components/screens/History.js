@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< Updated upstream
 import {
 	SafeAreaView,
 	View,
@@ -142,18 +141,6 @@ const History = ({ navigation }) => {
 				renderItem={renderItem}
 				keyExtractor={item => item.id}
 			/>
-=======
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
-import Header from '../items/heads/Header';
-
-const History = ({ navigation }) => {
-	return (
-		<SafeAreaView style={styles.container}>
-			<Header navigation={navigation} search back title='History' />
-			<View style={styles.wrapperContent}>
-				<Text>History</Text>
-			</View>
->>>>>>> Stashed changes
 		</SafeAreaView>
 	);
 };
@@ -161,7 +148,6 @@ const History = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-<<<<<<< Updated upstream
 	},
 	searchbar: {
 		marginTop: '17%',
@@ -188,14 +174,6 @@ const styles = StyleSheet.create({
 		backgroundColor: '#F2DFC3',
 		borderBottomWidth: 1,
 		borderBottomColor: '#000',
-=======
->>>>>>> Stashed changes
-	},
-	image: {
-		flex: 1,
-		resizeMode: 'cover',
-		justifyContent: 'center',
-<<<<<<< Updated upstream
 	},
 	text: {
 		flexDirection: 'row',
@@ -220,9 +198,6 @@ const styles = StyleSheet.create({
 		fontSize: 11,
 		fontWeight: 'bold',
 		color: '#3C4043',
-=======
-		alignItems: 'center',
->>>>>>> Stashed changes
 	},
 });
 
