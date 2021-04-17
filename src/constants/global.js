@@ -14,10 +14,14 @@ const colors = {
 	LIGHTBLUE: '#9AC4F8',
 	GOOGLE: '#ea4335',
 	FACEBOOK: '#3b5998',
+	SUCCESS: '#31a24c',
 };
 const fontsize = {
 	BASE: 13,
+	NORMAL: 16,
 	TITLE: 20,
+	LITTLE_BIG_TITLE: 28,
+	BIG_TITLE: 36,
 };
 
 export { colors, fontsize, HEIGHT, WIDTH };

@@ -1,14 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-
+import { Provider as PaperProvider } from 'react-native-paper';
 import DrawerNavigator from './DrawerNavigator';
 
 const Navigation = () => {
 	return (
-		<NavigationContainer>
-			<DrawerNavigator />
-		</NavigationContainer>
+		<PaperProvider>
+			<NavigationContainer>
+				<DrawerNavigator />
+			</NavigationContainer>
+		</PaperProvider>
 	);
 };
 
