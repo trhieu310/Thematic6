@@ -1,49 +1,176 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
-import Header from '../items/heads/Header'
+import React, { useState, useEffect } from 'react';
+import {
+	StyleSheet,
+	Text,
+	View,
+	SafeAreaView,
+	TouchableOpacity,
+	Image,
+	Platform,
+	Dimensions,
+} from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import Header from '../items/heads/Header';
+import MapView, {
+	Marker,
+	PROVIDER_GOOGLE,
+	AnimatedRegion,
+	Animated,
+} from 'react-native-maps';
+import { key, apiCall } from '../../constants/global';
+const windowWidth = Dimensions.get('window').width;
 
-const Search = ({navigation}) => {
-    return (
-        <SafeAreaView style={styles.container}>
-            <Header 
-				navigation={navigation} 
-				searchBar
-				back 
-			/>
-            <View style={styles.wrapperContent}>
-                <View style={styles.wrapperMaps}>
-                    <Text>Maps</Text>
-                </View>
+const Search = ({ navigation }) => {
+	const [region, setRegion] = useState({
+		latitude: 15.9737549,
+		longitude: 108.2493927,
+		latitudeDelta: 0.0922,
+		longitudeDelta: 0.0421,
+	});
+	const [location, setLocation] = useState({});
+	const [isMarker, setIsMarker] = useState(false);
+	const [textSearch, setTextSearch] = useState('');
+
+	const fetchDataMaps = async place => {
+		console.log(place);
+		const response = await fetch(
+			// `${apiCall.API_URL_FIND_FROM_TEXT}${place}${apiCall.API_INPUT_TYPE}${apiCall.API_FIELDS}${apiCall.API_KEY}${key.API_PLACE}`,
+			`${apiCall.API_URL_FIND_FROM_ID}${place}${apiCall.API_KEY}${key.API_PLACE}`,
+		);
+
+		const data = await response.json();
+		setLocation({
+			latitude: data.result.geometry.location.lat,
+			longitude: data.result.geometry.location.lng,
+		});
+		setRegion({
+			latitude: data.result.geometry.location.lat,
+			longitude: data.result.geometry.location.lng,
+			latitudeDelta: 0.0922,
+			longitudeDelta: 0.0421,
+		});
+		setIsMarker(true);
+	};
+
+	return (
+		<SafeAreaView style={styles.container}>
+			<Header navigation={navigation} searchBar back />
+			<View style={[styles.wrapperSearchBar]}>
+				<GooglePlacesAutocomplete
+					placeholder='Search'
+					styles={{
+						textInput: [styles.inputSearch, {}],
+					}}
+					onPress={(data, details = null) => {
+						console.log(data, details);
+						fetchDataMaps(data.place_id);
+						setTextSearch('');
+					}}
+					GooglePlacesDetailsQuery={{
+						key: key.API_PLACE,
+					}}
+					query={{
+						key: key.API_PLACE,
+						language: 'en',
+					}}
+					textInputProps={{
+						onChangeText: textSearch => setTextSearch(textSearch),
+					}}
+				/>
+				<TouchableOpacity style={styles.wrapperSearchBarButton}>
+					<Image
+						source={require('../../../assets/search_26px.png')}
+						style={styles.imageSearch}
+					/>
+				</TouchableOpacity>
+			</View>
+			<View style={styles.wrapperContent}>
+				<Animated
+					style={styles.wrapperMaps}
+					provider={PROVIDER_GOOGLE}
+					initialRegion={region}
+					region={region}
+					onRegionChange={region => setRegion(region)}>
+					{isMarker && (
+						<Marker
+							draggable
+							coordinate={location}
+							onDragEnd={e =>
+								setLocation({ x: e.nativeEvent.coordinate })
+							}
+						/>
+					)}
+				</Animated>
 				<View style={styles.searchPage}>
 					<Text>Search</Text>
 				</View>
 			</View>
-        </SafeAreaView>
-    )
-}
+		</SafeAreaView>
+	);
+};
 
-export default Search
+export default Search;
 
 const styles = StyleSheet.create({
-    container: {
-		flex: 1
+	container: {
+		flex: 1,
+	},
+	wrapperSearchBar: {
+		width: windowWidth - 40,
+		paddingTop: 11,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+		alignSelf: 'flex-end',
+		zIndex: 10001,
+	},
+	wrapperSearchBarButton: {
+		width: 40,
+		height: 40,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 20,
+		marginRight: 20,
+		marginVertical: 13,
+		backgroundColor: '#fff',
+		borderWidth: 1,
+		borderColor: '#eee',
+		zIndex: 10001,
+		position: 'absolute',
+		right: 0,
+		top: 2,
+	},
+	inputSearch: {
+		flex: 1,
+		height: 48,
+		fontSize: 18,
+		borderRadius: 24,
+		borderWidth: 2,
+		borderColor: '#eee',
+		backgroundColor: '#fff',
+		paddingHorizontal: 12,
+		paddingRight: 50,
+		marginStart: 11,
+		marginEnd: 15,
+		zIndex: 10000,
 	},
 	wrapperContent: {
 		flex: 1,
-		backgroundColor: '#fff'
+		backgroundColor: '#fff',
 	},
-    wrapperMaps: {
-        flex: 1,
-        height: 230,
-        maxHeight: 230,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#eeeeee'
-    },
-    searchPage: {
-        flex: 1,
-        paddingHorizontal: 7,
-		paddingVertical: 5
-    }
-})
+	wrapperMaps: {
+		flex: 1,
+		height: 230,
+		maxHeight: 230,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderBottomWidth: 1,
+		borderBottomColor: '#eeeeee',
+		zIndex: 9,
+	},
+	searchPage: {
+		flex: 1,
+		paddingHorizontal: 7,
+		paddingVertical: 5,
+	},
+});

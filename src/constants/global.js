@@ -20,4 +20,19 @@ const fontsize = {
 	TITLE: 20,
 };
 
-export { colors, fontsize, HEIGHT, WIDTH };
+const key = {
+	API_PLACE: 'AIzaSyA5vqtQ_u9gebimOHGpVpYyCSArQ5qSAaY',
+};
+
+const apiCall = {
+	API_URL_FIND_FROM_TEXT:
+		'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=',
+	API_INPUT_TYPE: '&inputtype=textquery',
+	API_FIELDS:
+		'&fields=photos,formatted_address,name,rating,opening_hours,geometry',
+	API_KEY: '&key=',
+	API_URL_FIND_FROM_ID:
+		'https://maps.googleapis.com/maps/api/place/details/json?placeid=',
+};
+
+export { colors, fontsize, HEIGHT, WIDTH, key, apiCall };
