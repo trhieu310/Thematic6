@@ -5,6 +5,8 @@
     
     <!-- Required -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Permission for get GPS position -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- Include this only if you are planning to use the camera roll -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -20,6 +22,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+      <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyA5vqtQ_u9gebimOHGpVpYyCSArQ5qSAaY" />
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"

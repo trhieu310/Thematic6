@@ -1,145 +1,151 @@
 import React from 'react';
-import {
-	StyleSheet,
-	View,
-	Image,
-	TouchableOpacity,
-	Platform,
-} from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Platform} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import {
+import { 
 	HomeStackNavigator,
 	SearchStackNavigator,
 	ScanStackNavigator,
 	HistoryStackNavigator,
-	PersonalStackNavigator,
-} from './StackNavigation';
+	PersonalStackNavigator
+} from './StackNavigation'
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-const CustomTabBarButton = ({ children, onPress }) => {
-	return (
-		<TouchableOpacity
-			style={[styles.customButton, styles.shadow]}
-			onPress={onPress}>
-			<View style={styles.viewCustomButton}>{children}</View>
-		</TouchableOpacity>
-	);
-};
-
-const listTab = [
-	{
-		name: 'Home',
-		component: HomeStackNavigator,
-		icon: {
-			focused: require('assets/home_56px.png'),
-			normal: require('assets/home_24px.png'),
-		},
-	},
-	{
-		name: 'Search',
-		component: SearchStackNavigator,
-		icon: {
-			focused: require('assets/search_56px.png'),
-			normal: require('assets/search_26px.png'),
-		},
-	},
-	{
-		name: 'Scan',
-		component: ScanStackNavigator,
-		source: require('assets/qr_code_64px.png'),
-		icon: {
-			focused: '',
-			normal: '',
-		},
-	},
-	{
-		name: 'History',
-		component: HistoryStackNavigator,
-		icon: {
-			focused: require('assets/address_64px.png'),
-			normal: require('assets/address_32px.png'),
-		},
-	},
-	{
-		name: 'Personal',
-		component: PersonalStackNavigator,
-		icon: {
-			focused: require('assets/icons8-male_user.png'),
-			normal: require('assets/male_user_32px.png'),
-		},
-	},
-];
+const CustomTabBarButton = ({children, onPress}) => {
+	return (<TouchableOpacity
+		style={[styles.customButton, styles.shadow]}
+		onPress={onPress}
+	>
+		<View style={styles.viewCustomButton}>
+			{children}
+		</View>
+	</TouchableOpacity>)
+}
 
 const BottomTabNavigator = () => {
 	return (
-		<Tab.Navigator
-			initialRouteName='Home'
+		<Tab.Navigator initialRouteName="Home"
 			tabBarOptions={{
 				showLabel: false,
-				style: [styles.navigatorStyle, styles.shadow],
+				style: {
+					position: 'absolute',
+					bottom: Platform.OS === 'ios' ? 15 : 10,
+					left: 10,
+					right: 10,
+					elevation: 0,
+					borderRadius: Platform.OS === 'ios' ? 25 : 15,
+					height: 90,
+					backgroundColor: '#ffffff',
+					...styles.shadow,
+				},
 				tabStyle: {
-					top: Platform.OS === 'ios' ? 20 : 5,
+					top: Platform.OS === 'ios' ? 20 : 5
 				},
 			}}
-			// tabBar={({ descriptors, navigation, state,  }) => {}}
-		>
-			{listTab.map((tabItem, index) => {
-				const { name, component, icon, source } = tabItem;
-
-				if (name !== 'Scan')
-					return (
-						<Tab.Screen
-							key={name}
-							name={name}
-							component={component}
-							options={{
-								tabBarIcon: ({ focused }) => {
-									return (
-										<View
-											style={[
-												styles.viewBag,
-												focused
-													? styles.bgFocus
-													: styles.bgNoneFocus,
-											]}>
-											<Image
-												source={
-													focused
-														? icon.focused
-														: icon.normal
-												}
-												resizeMode='contain'
-												style={styles.iconImg}
-											/>
-										</View>
-									);
-								},
-							}}
+			>
+			<Tab.Screen
+				name="Home"
+				component={HomeStackNavigator}
+				options={{
+					tabBarIcon: ({ focused }) => {
+						return <View
+							style={[
+								styles.viewBag,
+								focused
+									? styles.bgFocus
+									: styles.bgNoneFocus,
+							]}>
+							<Image 
+								source={focused ? require('../../assets/home_56px.png') : require('../../assets/home_24px.png')}
+								resizeMode='contain'
+								style={styles.iconImg}
+							/>
+						</View>
+					},
+				}}
+			/>
+			<Tab.Screen
+				name="Search"
+				component={SearchStackNavigator}
+				options={{
+					tabBarIcon: ({ focused }) => {
+						return <View
+							style={[
+								styles.viewBag,
+								focused
+									? styles.bgFocus
+									: styles.bgNoneFocus,
+							]}>
+							<Image 
+								source={focused ? require('../../assets/search_56px.png') : require('../../assets/search_26px.png')}
+								resizeMode='contain'
+								style={styles.iconImg}
+							/>
+						</View>
+					},
+				}}
+			/>
+			<Tab.Screen
+				name="Scan"
+				component={ScanStackNavigator}
+				options={{
+					tabBarIcon: ({ focused }) => (
+						<Image 
+							source={require('../../assets/qr_code_64px.png')}
+							resizeMode='contain'
+							style={styles.iconImgCustom}
 						/>
-					);
-
-				return (
-					<Tab.Screen
-						key={name}
-						name='Scan'
-						component={ScanStackNavigator}
-						options={{
-							tabBarIcon: ({ focused }) => (
-								<Image
-									source={source}
-									resizeMode='contain'
-									style={styles.iconImgCustom}
-								/>
-							),
-							tabBarButton: props => {
-								return <CustomTabBarButton {...props} />;
-							},
-						}}
-					/>
-				);
-			})}
+					),
+					tabBarButton: (props) => {
+						return <CustomTabBarButton {...props} />	
+					}
+						
+				}}
+			/>
+			<Tab.Screen
+				name="History"
+				component={HistoryStackNavigator}
+				options={{
+					tabBarIcon: ({ focused }) => {
+						return <View
+							style={[
+								styles.viewBag,
+								focused
+									? styles.bgFocus
+									: styles.bgNoneFocus,
+							]}>
+							<Image 
+								source={focused ? require('../../assets/address_64px.png') : require('../../assets/address_32px.png')}
+								resizeMode='contain'
+								style={styles.iconImg}
+							/>
+						</View>
+					},
+				}}
+			/>
+			<Tab.Screen
+				name="Personal"
+				component={PersonalStackNavigator}
+				options={{
+					tabBarIcon: ({ focused }) => {
+						return <View
+							style={[
+								styles.viewBag,
+								focused
+									? styles.bgFocus
+									: styles.bgNoneFocus,
+							]}>
+							<Image 
+								source={focused ? require('../../assets/icons8-male_user.png') : require('../../assets/male_user_32px.png')}
+								resizeMode='contain'
+								style={styles.iconImg}
+							/>
+						</View>
+					},
+				}}
+			/>
 		</Tab.Navigator>
 	);
 };
@@ -154,11 +160,11 @@ const styles = StyleSheet.create({
 	},
 	iconImg: {
 		width: 24,
-		height: 24,
+		height: 24
 	},
 	iconImgCustom: {
 		width: 40,
-		height: 40,
+		height: 40
 	},
 	bgFocus: {
 		backgroundColor: '#DC0048',
@@ -168,11 +174,11 @@ const styles = StyleSheet.create({
 			height: Platform.OS === 'ios' ? 2 : 6,
 		},
 		shadowOpacity: 0.5,
-		shadowRadius: Platform.OS === 'ios' ? 3.5 : 5,
+		shadowRadius: Platform.OS === 'ios' ? 3.5: 5,
 		elevation: Platform.OS === 'ios' ? 3 : 5,
 	},
 	bgNoneFocus: {
-		backgroundColor: '#fff',
+		backgroundColor: '#fff'
 	},
 	shadow: {
 		shadowColor: '#555',
@@ -181,7 +187,7 @@ const styles = StyleSheet.create({
 			height: Platform.OS === 'ios' ? 2 : 6,
 		},
 		shadowOpacity: 0.25,
-		shadowRadius: Platform.OS === 'ios' ? 3.5 : 5,
+		shadowRadius: Platform.OS === 'ios' ? 3.5: 5,
 		elevation: Platform.OS === 'ios' ? 3 : 5,
 	},
 	customButton: {
@@ -196,19 +202,8 @@ const styles = StyleSheet.create({
 		width: 70,
 		height: 70,
 		borderRadius: 35,
-		backgroundColor: '#DC0048',
-	},
-	navigatorStyle: {
-		position: 'relative',
-		// bottom: Platform.OS === 'ios' ? 15 : 10,
-		// left: 10,
-		// right: 10,
-		elevation: 0,
-		overflow: 'hidden',
-		borderRadius: Platform.OS === 'ios' ? 25 : 15,
-		height: 90,
-		backgroundColor: '#ffffff',
-	},
+		backgroundColor: '#DC0048'
+	}
 });
 
 export default BottomTabNavigator;

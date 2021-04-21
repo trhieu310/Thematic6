@@ -11,17 +11,31 @@ const colors = {
 	CYAN: '#00FFFF',
 	ORANGE: '#FFAB00',
 	PRIMARY: '#87CEFA',
-	LIGHTBLUE: '#9AC4F8',
-	GOOGLE: '#ea4335',
-	FACEBOOK: '#3b5998',
-	SUCCESS: '#31a24c',
+	LIGHTBLUE: '#81BDF2',
+	GOOGLE: '#ED3A47',
+	FACEBOOK: '#4267B2',
+	LIGHTGRAY: '#BDBDBD',
+	GRAY: '#555555',
+	YELLOWORANGE: '#F8B712',
 };
 const fontsize = {
 	BASE: 13,
-	NORMAL: 16,
 	TITLE: 20,
-	LITTLE_BIG_TITLE: 28,
-	BIG_TITLE: 36,
 };
 
-export { colors, fontsize, HEIGHT, WIDTH };
+const key = {
+	API_PLACE: 'AIzaSyA5vqtQ_u9gebimOHGpVpYyCSArQ5qSAaY',
+};
+
+const apiCall = {
+	API_URL_FIND_FROM_TEXT:
+		'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=',
+	API_INPUT_TYPE: '&inputtype=textquery',
+	API_FIELDS:
+		'&fields=photos,formatted_address,name,rating,opening_hours,geometry',
+	API_KEY: '&key=',
+	API_URL_FIND_FROM_ID:
+		'https://maps.googleapis.com/maps/api/place/details/json?placeid=',
+};
+
+export { colors, fontsize, HEIGHT, WIDTH, key, apiCall };
