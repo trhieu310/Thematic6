@@ -6,6 +6,7 @@ import LoginButton from './LoginButton';
 import SocialButton from './SocialButton';
 import LinkButton from './LinkButton';
 import SearchItem from './SearchItem';
+import ButtonSetting from './ButtonSetting';
 
 export {
 	IconFa,
@@ -16,4 +17,5 @@ export {
 	SocialButton,
 	LinkButton,
 	SearchItem,
+	ButtonSetting,
 };
