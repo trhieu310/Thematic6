@@ -63,7 +63,10 @@ const Login = ({ navigation }) => {
 								placeholder='Password'
 								secureTextEntry={true}
 							/>
-							<LoginButton style={[styles.loginButton]} />
+							<LoginButton
+								style={[styles.loginButton]}
+								onPress={() => navigation.navigate('Home')}
+							/>
 
 							<LinkButton
 								text='Forgot your passwrord'

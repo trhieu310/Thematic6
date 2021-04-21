@@ -16,9 +16,8 @@ const Drawer = createDrawerNavigator();
 const DrawerNavigator = () => {
 	return (
 		<Drawer.Navigator
-		// drawerStyle={drawerStyle}
-		// initialRouteName='Login'
-		>
+			// drawerStyle={drawerStyle}
+			initialRouteName='Login'>
 			<Drawer.Screen name='Home' component={TabNavigator} />
 			<Drawer.Screen
 				name='Login'

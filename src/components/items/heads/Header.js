@@ -55,7 +55,12 @@ const Header = ({
 							styles.wrapperTitle,
 							search ? '' : { paddingRight: 65 },
 						]}>
-						<Text style={[styles.title, titleStyle]}>
+						<Text
+							style={[
+								styles.title,
+								titleStyle,
+								back ? '' : { marginStart: 55 },
+							]}>
 							{title ? title : ''}
 						</Text>
 					</View>
