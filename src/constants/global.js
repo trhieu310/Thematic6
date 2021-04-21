@@ -16,6 +16,7 @@ const colors = {
 	FACEBOOK: '#4267B2',
 	LIGHTGRAY: '#BDBDBD',
 	GRAY: '#555555',
+	YELLOWORANGE: '#F8B712',
 };
 const fontsize = {
 	BASE: 13,

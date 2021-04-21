@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 	},
 	inputTop: {
-		marginTop: windowHeight > 640 ? 220 : 45,
+		marginTop: windowHeight > 640 ? 200 : 45,
 	},
 	registerTop: {
 		marginTop: 25,

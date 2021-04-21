@@ -119,7 +119,9 @@ const Search = ({ navigation }) => {
 						<Text style={styles.searchText}>Search Results</Text>
 					</View>
 					<ScrollView>
-						<SearchItem />
+						<SearchItem
+							onPress={() => navigation.navigate('Detail')}
+						/>
 						<SearchItem />
 						<SearchItem />
 						<SearchItem />

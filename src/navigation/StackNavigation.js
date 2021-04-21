@@ -11,6 +11,7 @@ import Scan from 'components/screens/Scan';
 import History from 'components/screens/History';
 import Personal from 'components/screens/Personal';
 import LoadingFirst from 'components/screens/Loading/LoadingFirst';
+import Detail from 'components/screens/Detail';
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,7 @@ const SearchStackNavigator = () => {
 				headerShown: false,
 			}}>
 			<Stack.Screen name='Search' component={Search} />
+			<Stack.Screen name='Detail' component={Detail} />
 		</Stack.Navigator>
 	);
 };
