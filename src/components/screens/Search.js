@@ -8,8 +8,10 @@ import {
 	Image,
 	Platform,
 	Dimensions,
+	ScrollView,
 } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import Geolocation from '@react-native-community/geolocation';
 import Header from '../items/heads/Header';
 import MapView, {
 	Marker,
@@ -18,7 +20,12 @@ import MapView, {
 	Animated,
 } from 'react-native-maps';
 import { key, apiCall } from '../../constants/global';
+import useLocationPermission from 'hook/useLocationPermission';
+import { Icon } from 'react-native-elements';
+import { SearchItem } from 'components/items';
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+const resultImg = require('../../../assets/address_32px.png');
 
 const Search = ({ navigation }) => {
 	const [region, setRegion] = useState({
@@ -30,6 +37,8 @@ const Search = ({ navigation }) => {
 	const [location, setLocation] = useState({});
 	const [isMarker, setIsMarker] = useState(false);
 	const [textSearch, setTextSearch] = useState('');
+	const [locationStatus, setLocationStatus] = useState('');
+	const granted = useLocationPermission();
 
 	const fetchDataMaps = async place => {
 		console.log(place);
@@ -85,10 +94,13 @@ const Search = ({ navigation }) => {
 				</TouchableOpacity>
 			</View>
 			<View style={styles.wrapperContent}>
-				<Animated
+				<MapView
+					zoomEnabled={true}
+					zoomControlEnabled={true}
+					zoomTapEnabled={true}
 					style={styles.wrapperMaps}
 					provider={PROVIDER_GOOGLE}
-					initialRegion={region}
+					// initialRegion={region}
 					region={region}
 					onRegionChange={region => setRegion(region)}>
 					{isMarker && (
@@ -100,9 +112,19 @@ const Search = ({ navigation }) => {
 							}
 						/>
 					)}
-				</Animated>
+				</MapView>
 				<View style={styles.searchPage}>
-					<Text>Search</Text>
+					<View style={styles.searchTitle}>
+						<Image style={styles.searchIcon} source={resultImg} />
+						<Text style={styles.searchText}>Search Results</Text>
+					</View>
+					<ScrollView>
+						<SearchItem />
+						<SearchItem />
+						<SearchItem />
+						<SearchItem />
+						<SearchItem />
+					</ScrollView>
 				</View>
 			</View>
 		</SafeAreaView>
@@ -172,5 +194,23 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: 7,
 		paddingVertical: 5,
+		paddingBottom: Platform.OS === 'ios' ? 110 : 95,
+	},
+	searchTitle: {
+		flex: 1,
+		flexDirection: 'row',
+		maxHeight: 40,
+		minHeight: 40,
+		height: 40,
+		alignItems: 'center',
+	},
+	searchIcon: {
+		width: 22,
+		height: 22,
+		marginEnd: 7,
+	},
+	searchText: {
+		flex: 5,
+		fontSize: 18,
 	},
 });

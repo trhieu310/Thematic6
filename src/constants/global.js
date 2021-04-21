@@ -12,8 +12,10 @@ const colors = {
 	ORANGE: '#FFAB00',
 	PRIMARY: '#87CEFA',
 	LIGHTBLUE: '#9AC4F8',
-	GOOGLE: '#ea4335',
-	FACEBOOK: '#3b5998',
+	GOOGLE: '#ED3A47',
+	FACEBOOK: '#4267B2',
+	LIGHTGRAY: '#BDBDBD',
+	GRAY: '#555555',
 };
 const fontsize = {
 	BASE: 13,
