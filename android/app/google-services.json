@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "315121569493",
+    "firebase_url": "https://qrtravel-app-default-rtdb.firebaseio.com",
+    "project_id": "qrtravel-app",
+    "storage_bucket": "qrtravel-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315121569493:android:1af74ac058df69d0025c5c",
+        "android_client_info": {
+          "package_name": "com.thematic6"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315121569493-rg7mg2f50qsd39lm4ltns950fbvtqgdk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thematic6",
+            "certificate_hash": "5451c3f09f5536696d2dad88b0a971c20bace7cf"
+          }
+        },
+        {
+          "client_id": "315121569493-11klvb41cqbsu97b0hhfu584148nskuh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXodeQIfDkmAZKS7gN9rHWY0sW9GYa1k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315121569493-11klvb41cqbsu97b0hhfu584148nskuh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
