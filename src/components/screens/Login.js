@@ -27,9 +27,37 @@ const backgroundImg = require('../../../assets/images/login_bg.png');
 const registerImg = require('../../../assets/images/rgt_image.jpg');
 const windowHeight = Dimensions.get('window').height;
 import auth from '@react-native-firebase/auth';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 
 const Login = ({ navigation }) => {
 	const [activeTab, setActiveTab] = useState('SignIn');
+
+	async function onFacebookButtonPress() {
+		// Attempt login with permissions
+		const result = await LoginManager.logInWithPermissions([
+			'public_profile',
+			'email',
+		]);
+
+		if (result.isCancelled) {
+			throw 'User cancelled the login process';
+		}
+
+		// Once signed in, get the users AccesToken
+		const data = await AccessToken.getCurrentAccessToken();
+
+		if (!data) {
+			throw 'Something went wrong obtaining access token';
+		}
+
+		// Create a Firebase credential with the AccessToken
+		const facebookCredential = auth.FacebookAuthProvider.credential(
+			data.accessToken,
+		);
+
+		// Sign-in the user with the credential
+		return auth().signInWithCredential(facebookCredential);
+	}
 
 	function SignIn() {
 		const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -81,6 +109,11 @@ const Login = ({ navigation }) => {
 								size={32}
 								text='Connect with Facebook'
 								style={[styles.fbLogin, styles.buttonGroup]}
+								onPress={() =>
+									onFacebookButtonPress().then(() =>
+										navigation.navigate('Home'),
+									)
+								}
 							/>
 							<SocialButton
 								text='Connect with Google'

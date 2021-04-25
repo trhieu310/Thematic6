@@ -14,6 +14,7 @@ import { colors, fontsize } from 'constants/global';
 import { TouchableRipple } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
+import { Button } from 'react-native';
 
 const ButtonRipple = ({ style, icon, onPress, children, ...props }) => {
 	return (
@@ -75,7 +76,7 @@ const Home = ({ navigation }) => {
 
 	if (initializing) return null;
 	if (!user) {
-		return navigation.navigate('Login');
+		return <View>{navigation.navigate('Login')}</View>;
 	} else
 		return (
 			<SafeAreaView style={styles.container}>

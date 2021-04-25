@@ -2,8 +2,15 @@ import { ButtonSetting } from 'components/items';
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import Header from '../items/heads/Header';
+import auth from '@react-native-firebase/auth';
 
 const Personal = ({ navigation }) => {
+	const logOut = () => {
+		auth()
+			.signOut()
+			.then(() => navigation.navigate('Home'));
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<Header navigation={navigation} back title='Profile' />
@@ -26,6 +33,7 @@ const Personal = ({ navigation }) => {
 					style={styles.button}
 					text='Log out'
 					backgroundColor='#F66060'
+					onPress={() => logOut()}
 				/>
 			</View>
 		</SafeAreaView>
