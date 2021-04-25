@@ -17,6 +17,7 @@ const colors = {
 	LIGHTGRAY: '#BDBDBD',
 	GRAY: '#555555',
 	YELLOWORANGE: '#F8B712',
+	GREEN: '#00FF00'
 };
 const fontsize = {
 	BASE: 13,

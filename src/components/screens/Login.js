@@ -12,6 +12,8 @@ import {
 	ImageBackground,
 	Image,
 	ScrollView,
+	ToastAndroid,
+	Platform,
 } from 'react-native';
 
 import * as theme from '../../constants/global';
@@ -24,6 +26,7 @@ import {
 const backgroundImg = require('../../../assets/images/login_bg.png');
 const registerImg = require('../../../assets/images/rgt_image.jpg');
 const windowHeight = Dimensions.get('window').height;
+import auth from '@react-native-firebase/auth';
 
 const Login = ({ navigation }) => {
 	const [activeTab, setActiveTab] = useState('SignIn');
@@ -103,11 +106,59 @@ const Login = ({ navigation }) => {
 		const [password, setPassword] = useState('');
 		const [confirmPassword, setConfirmPassword] = useState('');
 		const [isRegisterEmail, setIsRegisterEmail] = useState(false);
+		const [isConfirmPassword, setIsConfirmPassword] = useState(false);
 
-		function isEmailValid(email) {
+		const showToastWithGravityAndOffset = message => {
+			ToastAndroid.showWithGravityAndOffset(
+				message,
+				ToastAndroid.LONG,
+				ToastAndroid.BOTTOM,
+				25,
+				50,
+			);
+		};
+
+		const registerAccount = () => {
+			if (password === confirmPassword) {
+				auth()
+					.createUserWithEmailAndPassword(email, password)
+					.then(() => {
+						console.log('User account created & signed in!');
+					})
+					.catch(error => {
+						if (error.code === 'auth/email-already-in-use') {
+							showToastWithGravityAndOffset(
+								'That email address is already in use!',
+							);
+							console.log(
+								'That email address is already in use!',
+							);
+						}
+
+						if (error.code === 'auth/invalid-email') {
+							showToastWithGravityAndOffset(
+								'That email address is invalid!',
+							);
+							console.log('That email address is invalid!');
+						}
+						showToastWithGravityAndOffset(error);
+						console.error(error);
+					});
+			}
+		};
+
+		const onChangeTextConfirmHandle = text => {
+			setConfirmPassword(text);
+			text === password
+				? setIsConfirmPassword(true)
+				: setIsConfirmPassword(false);
+			console.log(password);
+		};
+
+		const isEmailValid = email => {
 			const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 			return re.test(String(email).toLowerCase());
-		}
+		};
 		return (
 			<ImageBackground
 				style={styles.imageBackground}
@@ -150,15 +201,26 @@ const Login = ({ navigation }) => {
 									name='check'
 									size={22}
 									type='font-awesome-5'
+									color={
+										isConfirmPassword
+											? theme.colors.GREEN
+											: theme.colors.RED
+									}
 									value={confirmPassword}
 									onChangeText={text =>
-										setConfirmPassword(text)
+										onChangeTextConfirmHandle(text)
 									}
-									style={styles.input}
+									style={[
+										styles.input,
+										isConfirmPassword
+											? styles.errorInput
+											: '',
+									]}
 									placeholder='Confirm Password'
 									secureTextEntry={true}
 								/>
 								<LoginButton
+									onPress={() => registerAccount()}
 									title='Register'
 									style={[styles.loginButton]}
 								/>
@@ -245,7 +307,8 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 	},
 	inputTop: {
-		marginTop: windowHeight > 640 ? 200 : 45,
+		marginTop:
+			windowHeight > 640 ? (Platform.OS === 'ios' ? 200 : 150) : 45,
 	},
 	registerTop: {
 		marginTop: 25,
@@ -288,5 +351,8 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: theme.colors.WHITE,
 		textAlign: 'center',
+	},
+	errorInput: {
+		borderColor: theme.colors.RED,
 	},
 });
