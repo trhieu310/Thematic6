@@ -28,10 +28,14 @@ const registerImg = require('../../../assets/images/rgt_image.jpg');
 const windowHeight = Dimensions.get('window').height;
 import auth from '@react-native-firebase/auth';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Login = ({ navigation }) => {
 	const [activeTab, setActiveTab] = useState('SignIn');
-
+	GoogleSignin.configure({
+		webClientId:
+			'315121569493-11klvb41cqbsu97b0hhfu584148nskuh.apps.googleusercontent.com',
+	});
 	async function onFacebookButtonPress() {
 		// Attempt login with permissions
 		const result = await LoginManager.logInWithPermissions([
@@ -57,6 +61,17 @@ const Login = ({ navigation }) => {
 
 		// Sign-in the user with the credential
 		return auth().signInWithCredential(facebookCredential);
+	}
+
+	async function onGoogleButtonPress() {
+		// Get the users ID token
+		const { idToken } = await GoogleSignin.signIn();
+
+		// Create a Google credential with the token
+		const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+		// Sign-in the user with the credential
+		return auth().signInWithCredential(googleCredential);
 	}
 
 	function SignIn() {
@@ -110,14 +125,21 @@ const Login = ({ navigation }) => {
 								text='Connect with Facebook'
 								style={[styles.fbLogin, styles.buttonGroup]}
 								onPress={() =>
-									onFacebookButtonPress().then(() =>
-										navigation.navigate('Home'),
-									)
+									onFacebookButtonPress().then(() => {
+										console.log('Signed in with Facebook!');
+										navigation.navigate('Home');
+									})
 								}
 							/>
 							<SocialButton
 								text='Connect with Google'
 								style={styles.buttonGroup}
+								onPress={() =>
+									onGoogleButtonPress().then(() => {
+										console.log('Signed in with Google!');
+										navigation.navigate('Home');
+									})
+								}
 							/>
 
 							<LinkButton
@@ -179,7 +201,44 @@ const Login = ({ navigation }) => {
 					});
 			}
 		};
-
+		async function onFacebookButtonPress() {
+			// Attempt login with permissions
+			const result = await LoginManager.logInWithPermissions([
+				'public_profile',
+				'email',
+			]);
+	
+			if (result.isCancelled) {
+				throw 'User cancelled the login process';
+			}
+	
+			// Once signed in, get the users AccesToken
+			const data = await AccessToken.getCurrentAccessToken();
+	
+			if (!data) {
+				throw 'Something went wrong obtaining access token';
+			}
+	
+			// Create a Firebase credential with the AccessToken
+			const facebookCredential = auth.FacebookAuthProvider.credential(
+				data.accessToken,
+			);
+	
+			// Sign-in the user with the credential
+			return auth().signInWithCredential(facebookCredential);
+		}
+	
+		async function onGoogleButtonPress() {
+			// Get the users ID token
+			const { idToken } = await GoogleSignin.signIn();
+	
+			// Create a Google credential with the token
+			const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+	
+			// Sign-in the user with the credential
+			return auth().signInWithCredential(googleCredential);
+		}
+		
 		const onChangeTextConfirmHandle = text => {
 			setConfirmPassword(text);
 			text === password
@@ -294,10 +353,26 @@ const Login = ({ navigation }) => {
 									size={32}
 									text='Connect with Facebook'
 									style={[styles.fbLogin, styles.buttonGroup]}
+									onPress={() =>
+										onFacebookButtonPress().then(() => {
+											console.log(
+												'Signed in with Facebook!',
+											);
+											navigation.navigate('Home');
+										})
+									}
 								/>
 								<SocialButton
 									text='Connect with Google'
 									style={styles.buttonGroup}
+									onPress={() =>
+										onGoogleButtonPress().then(() => {
+											console.log(
+												'Signed in with Google!',
+											);
+											navigation.navigate('Home');
+										})
+									}
 								/>
 
 								<LinkButton

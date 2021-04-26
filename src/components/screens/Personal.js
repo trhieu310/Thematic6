@@ -8,7 +8,7 @@ const Personal = ({ navigation }) => {
 	const logOut = () => {
 		auth()
 			.signOut()
-			.then(() => navigation.navigate('Home'));
+			.then(() => navigation.navigate('Login'));
 	};
 
 	return (
