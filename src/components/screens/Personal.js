@@ -6,9 +6,15 @@ import auth from '@react-native-firebase/auth';
 
 const Personal = ({ navigation }) => {
 	const logOut = () => {
-		auth()
-			.signOut()
-			.then(() => navigation.navigate('Login'));
+		const user = auth().currentUser;
+		if (user) {
+			auth()
+				.signOut()
+				.then(() => navigation.navigate('Login'));
+			
+		} else {
+			navigation.navigate('Login');
+		}
 	};
 
 	return (

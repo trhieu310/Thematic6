@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import {
 	StyleSheet,
 	Text,
 	View,
 	TouchableWithoutFeedback,
-	TouchableOpacity,
-	TextInput,
 	Keyboard,
 	Dimensions,
 	SafeAreaView,
@@ -37,7 +35,6 @@ const Login = ({ navigation }) => {
 			'315121569493-11klvb41cqbsu97b0hhfu584148nskuh.apps.googleusercontent.com',
 	});
 	async function onFacebookButtonPress() {
-		// Attempt login with permissions
 		const result = await LoginManager.logInWithPermissions([
 			'public_profile',
 			'email',
@@ -47,42 +44,122 @@ const Login = ({ navigation }) => {
 			throw 'User cancelled the login process';
 		}
 
-		// Once signed in, get the users AccesToken
 		const data = await AccessToken.getCurrentAccessToken();
 
 		if (!data) {
 			throw 'Something went wrong obtaining access token';
 		}
 
-		// Create a Firebase credential with the AccessToken
 		const facebookCredential = auth.FacebookAuthProvider.credential(
 			data.accessToken,
 		);
 
-		// Sign-in the user with the credential
 		return auth().signInWithCredential(facebookCredential);
 	}
 
 	async function onGoogleButtonPress() {
+		try {
+			await GoogleSignin.hasPlayServices();
+			const { idToken } = await GoogleSignin.signIn();
+			const googleCredential = auth.GoogleAuthProvider.credential(
+				idToken,
+			);
+			return auth().signInWithCredential(googleCredential);
+		} catch (error) {
+			if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+				showToastWithGravityAndOffset('Sign in was cancelled!');
+			} else if (error.code === statusCodes.IN_PROGRESS) {
+				showToastWithGravityAndOffset('Progressing...');
+			} else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+				showToastWithGravityAndOffset(
+					'Play services is not available!',
+				);
+			} else {
+				showToastWithGravityAndOffset(error.toString());
+			}
+		}
 		// Get the users ID token
-		const { idToken } = await GoogleSignin.signIn();
-
-		// Create a Google credential with the token
-		const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-		// Sign-in the user with the credential
-		return auth().signInWithCredential(googleCredential);
 	}
+
+	const showToastWithGravityAndOffset = message => {
+		ToastAndroid.showWithGravityAndOffset(
+			message,
+			ToastAndroid.LONG,
+			ToastAndroid.BOTTOM,
+			25,
+			50,
+		);
+	};
+
+	const isEmptyOrNull = text => {
+		return text === null || text === '' ? true : false;
+	};
 
 	function SignIn() {
 		const [showLoginPassword, setShowLoginPassword] = useState(false);
 		const [email, setEmail] = useState('');
 		const [password, setPassword] = useState('');
+		const [isValid, setIsValid] = useState(true);
 
 		function isEmailValid(email) {
-			const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			return re.test(String(email).toLowerCase());
 		}
+
+		const onChangeTextEmail = email => {
+			setEmail(email);
+			setIsValid(isEmailValid(email));
+		};
+
+		const login = () => {
+			if (!isEmptyOrNull(email) && !isEmptyOrNull(password)) {
+				try {
+					auth()
+						.signInWithEmailAndPassword(email, password)
+						.then(() => {
+							console.log('User account signed in!');
+							navigation.navigate('Home');
+						})
+						.catch(error => {
+							if (
+								error.code.toString() ===
+								'auth/email-already-in-use'
+							) {
+								showToastWithGravityAndOffset(
+									'That email address is already in use!',
+								);
+								console.log(
+									'That email address is already in use!',
+								);
+							} else if (
+								error.code.toString() === 'auth/invalid-email'
+							) {
+								showToastWithGravityAndOffset(
+									'That email address is invalid!',
+								);
+								console.log('That email address is invalid!');
+							} else {
+								showToastWithGravityAndOffset(error.toString());
+							}
+						});
+				} catch (error) {
+					if (error.code.toString() === 'auth/email-already-in-use') {
+						console.log('That email address is already in use!');
+					} else if (error.code.toString() === 'auth/invalid-email') {
+						showToastWithGravityAndOffset(
+							'That email address is invalid!',
+						);
+					} else {
+						showToastWithGravityAndOffset(error.toString());
+						console.error(error);
+					}
+				}
+			} else {
+				showToastWithGravityAndOffset(
+					'Email and password is required!',
+				);
+			}
+		};
 
 		return (
 			<ImageBackground
@@ -96,7 +173,8 @@ const Login = ({ navigation }) => {
 								size={25}
 								type='font-awesome-5'
 								value={email}
-								onChangeText={text => setEmail(text)}
+								color={!isValid ? theme.colors.RED : ''}
+								onChangeText={text => onChangeTextEmail(text)}
 								style={[styles.input, styles.inputTop]}
 							/>
 							<InputFieldLogin
@@ -111,7 +189,7 @@ const Login = ({ navigation }) => {
 							/>
 							<LoginButton
 								style={[styles.loginButton]}
-								onPress={() => navigation.navigate('Home')}
+								onPress={() => login()}
 							/>
 
 							<LinkButton
@@ -162,25 +240,47 @@ const Login = ({ navigation }) => {
 		const [confirmPassword, setConfirmPassword] = useState('');
 		const [isRegisterEmail, setIsRegisterEmail] = useState(false);
 		const [isConfirmPassword, setIsConfirmPassword] = useState(false);
-
-		const showToastWithGravityAndOffset = message => {
-			ToastAndroid.showWithGravityAndOffset(
-				message,
-				ToastAndroid.LONG,
-				ToastAndroid.BOTTOM,
-				25,
-				50,
-			);
-		};
+		const [isValid, setIsValid] = useState(true);
 
 		const registerAccount = () => {
-			if (password === confirmPassword) {
-				auth()
-					.createUserWithEmailAndPassword(email, password)
-					.then(() => {
-						console.log('User account created & signed in!');
-					})
-					.catch(error => {
+			if (!isEmptyOrNull(email) && !isEmptyOrNull(password)) {
+				if (password === confirmPassword) {
+					try {
+						auth()
+							.createUserWithEmailAndPassword(email, password)
+							.then(() => {
+								console.log(
+									'User account created & signed in!',
+								);
+							})
+							.catch(error => {
+								if (
+									error.code.toString() ===
+									'auth/email-already-in-use'
+								) {
+									showToastWithGravityAndOffset(
+										'That email address is already in use!',
+									);
+									console.log(
+										'That email address is already in use!',
+									);
+								} else if (
+									error.code.toString() ===
+									'auth/invalid-email'
+								) {
+									showToastWithGravityAndOffset(
+										'That email address is invalid!',
+									);
+									console.log(
+										'That email address is invalid!',
+									);
+								} else {
+									showToastWithGravityAndOffset(
+										error.toString(),
+									);
+								}
+							});
+					} catch (error) {
 						if (error.code === 'auth/email-already-in-use') {
 							showToastWithGravityAndOffset(
 								'That email address is already in use!',
@@ -188,57 +288,28 @@ const Login = ({ navigation }) => {
 							console.log(
 								'That email address is already in use!',
 							);
-						}
-
-						if (error.code === 'auth/invalid-email') {
+						} else if (error.code === 'auth/invalid-email') {
 							showToastWithGravityAndOffset(
 								'That email address is invalid!',
 							);
 							console.log('That email address is invalid!');
+						} else {
+							showToastWithGravityAndOffset(error);
 						}
-						showToastWithGravityAndOffset(error);
-						console.error(error);
-					});
+					}
+				}
+			} else {
+				showToastWithGravityAndOffset(
+					'Email and password is required!',
+				);
 			}
 		};
-		async function onFacebookButtonPress() {
-			// Attempt login with permissions
-			const result = await LoginManager.logInWithPermissions([
-				'public_profile',
-				'email',
-			]);
-	
-			if (result.isCancelled) {
-				throw 'User cancelled the login process';
-			}
-	
-			// Once signed in, get the users AccesToken
-			const data = await AccessToken.getCurrentAccessToken();
-	
-			if (!data) {
-				throw 'Something went wrong obtaining access token';
-			}
-	
-			// Create a Firebase credential with the AccessToken
-			const facebookCredential = auth.FacebookAuthProvider.credential(
-				data.accessToken,
-			);
-	
-			// Sign-in the user with the credential
-			return auth().signInWithCredential(facebookCredential);
-		}
-	
-		async function onGoogleButtonPress() {
-			// Get the users ID token
-			const { idToken } = await GoogleSignin.signIn();
-	
-			// Create a Google credential with the token
-			const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-	
-			// Sign-in the user with the credential
-			return auth().signInWithCredential(googleCredential);
-		}
-		
+
+		const onChangeTextEmail = email => {
+			setEmail(email);
+			setIsValid(isEmailValid(email));
+		};
+
 		const onChangeTextConfirmHandle = text => {
 			setConfirmPassword(text);
 			text === password
@@ -248,7 +319,7 @@ const Login = ({ navigation }) => {
 		};
 
 		const isEmailValid = email => {
-			const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			return re.test(String(email).toLowerCase());
 		};
 		return (
@@ -275,8 +346,11 @@ const Login = ({ navigation }) => {
 									name='envelope'
 									size={25}
 									type='font-awesome-5'
+									color={!isValid ? theme.colors.RED : ''}
 									value={email}
-									onChangeText={text => setEmail(text)}
+									onChangeText={text =>
+										onChangeTextEmail(text)
+									}
 									style={[styles.input, styles.registerTop]}
 								/>
 								<InputFieldLogin
@@ -312,7 +386,11 @@ const Login = ({ navigation }) => {
 									secureTextEntry={true}
 								/>
 								<LoginButton
-									onPress={() => registerAccount()}
+									onPress={() =>
+										registerAccount(() =>
+											navigation.navigate('Home'),
+										)
+									}
 									title='Register'
 									style={[styles.loginButton]}
 								/>
