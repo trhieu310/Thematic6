@@ -39,6 +39,7 @@ const Search = ({ navigation }) => {
 	const [textSearch, setTextSearch] = useState('');
 	const [locationStatus, setLocationStatus] = useState('');
 	const granted = useLocationPermission();
+	const [searchResult, setSearchResult] = useState([]);
 
 	const fetchDataMaps = async place => {
 		console.log(place);
@@ -118,15 +119,23 @@ const Search = ({ navigation }) => {
 						<Image style={styles.searchIcon} source={resultImg} />
 						<Text style={styles.searchText}>Search Results</Text>
 					</View>
-					<ScrollView>
-						<SearchItem
-							onPress={() => navigation.navigate('Detail')}
-						/>
-						<SearchItem />
-						<SearchItem />
-						<SearchItem />
-						<SearchItem />
-					</ScrollView>
+					{searchResult.length > 0 ? (
+						<ScrollView>
+							<SearchItem
+								onPress={() => navigation.navigate('Detail')}
+							/>
+							<SearchItem />
+							<SearchItem />
+							<SearchItem />
+							<SearchItem />
+						</ScrollView>
+					) : (
+						<ScrollView>
+							<View style={styles.rsView}>
+								<Text>Not found results</Text>
+							</View>
+						</ScrollView>
+					)}
 				</View>
 			</View>
 		</SafeAreaView>
@@ -214,5 +223,11 @@ const styles = StyleSheet.create({
 	searchText: {
 		flex: 5,
 		fontSize: 18,
+	},
+	rsView: {
+		flex: 1,
+		height: 120,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 });

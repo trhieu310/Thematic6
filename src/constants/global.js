@@ -17,7 +17,7 @@ const colors = {
 	LIGHTGRAY: '#BDBDBD',
 	GRAY: '#555555',
 	YELLOWORANGE: '#F8B712',
-	GREEN: '#00FF00'
+	GREEN: '#00FF00',
 };
 const fontsize = {
 	BASE: 13,
@@ -39,4 +39,10 @@ const apiCall = {
 		'https://maps.googleapis.com/maps/api/place/details/json?placeid=',
 };
 
-export { colors, fontsize, HEIGHT, WIDTH, key, apiCall };
+const databaseUrl = {
+	ROOT: 'checkin/',
+	HISTORY: 'histories/',
+	PLACE: 'places/'
+};
+
+export { colors, fontsize, HEIGHT, WIDTH, key, apiCall, databaseUrl };

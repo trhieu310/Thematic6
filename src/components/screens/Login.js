@@ -138,8 +138,16 @@ const Login = ({ navigation }) => {
 									'That email address is invalid!',
 								);
 								console.log('That email address is invalid!');
+							} else if (
+								error.code.toString() === 'auth/wrong-password'
+							) {
+								showToastWithGravityAndOffset(
+									'Wrong password!',
+								);
+								console.log('Wrong password!');
 							} else {
 								showToastWithGravityAndOffset(error.toString());
+								console.log(error.toString());
 							}
 						});
 				} catch (error) {

@@ -95,11 +95,11 @@ const Home = ({ navigation }) => {
 									<View style={styles.titleIcon}>
 										<Icon
 											name='check-circle'
-											size={34}
+											size={26}
 											color={colors.SUCCESS}
 										/>
 									</View>
-									<View>
+									<View style={styles.viewHeader}>
 										<Text style={styles.header}>
 											Suggestion
 										</Text>
@@ -175,11 +175,11 @@ const Home = ({ navigation }) => {
 									<View style={styles.titleIcon}>
 										<Icon
 											name='map-marked-alt'
-											size={34}
+											size={26}
 											color={colors.SUCCESS}
 										/>
 									</View>
-									<View>
+									<View style={styles.viewHeader}>
 										<Text style={styles.header}>
 											History
 										</Text>
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
 	},
 	homePage: {
 		// flex: 1,
-		paddingHorizontal: 16,
+		paddingHorizontal: 12,
 		paddingVertical: 8,
 		overflow: 'scroll',
 	},
@@ -437,9 +437,13 @@ const styles = StyleSheet.create({
 		flexWrap: 'nowrap',
 		flexDirection: 'row',
 		alignItems: 'center',
+		paddingVertical: 5
 	},
 	titleIcon: {
 		// padding: 8,
+	},
+	viewHeader: {
+		marginLeft: 5
 	},
 	header: {
 		fontSize: fontsize.TITLE,
