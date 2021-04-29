@@ -4,7 +4,7 @@ import { colors } from '../../constants/global';
 
 const LoginButton = ({ title = 'Login', onPress, style }) => {
 	return (
-		<TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+		<TouchableOpacity style={[style, styles.container]} onPress={onPress}>
 			<Text style={styles.text}>{title}</Text>
 		</TouchableOpacity>
 	);

@@ -12,6 +12,7 @@ import History from 'components/screens/History';
 import Personal from 'components/screens/Personal';
 import LoadingFirst from 'components/screens/Loading/LoadingFirst';
 import Detail from 'components/screens/Detail';
+import PersonalEdit from 'components/screens/PersonalEdit';
 
 const Stack = createStackNavigator();
 
@@ -89,6 +90,7 @@ const PersonalStackNavigator = () => {
 				headerShown: false,
 			}}>
 			<Stack.Screen name='Personal' component={Personal} />
+			<Stack.Screen name='PersonalInfo' component={PersonalEdit} />
 		</Stack.Navigator>
 	);
 };
