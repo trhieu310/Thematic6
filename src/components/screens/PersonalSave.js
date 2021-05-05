@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native';
 import { colors } from 'constants/global';
 const defaultImage = require('../../../assets/images/rgt_image.jpg');
 
-const PersonalEdit = ({ navigation }) => {
+const PersonalSave = ({ navigation }) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<Header navigation={navigation} back title='Profile' />
@@ -33,10 +33,8 @@ const PersonalEdit = ({ navigation }) => {
 						<Text style={styles.leftText}>Sex</Text>
 						<Text style={styles.rightText}>Male</Text>
 					</View>
-					<TouchableOpacity
-						style={styles.btn}
-						onPress={() => navigation.navigate('PersonalSave')}>
-						<Text style={styles.textBtn}>Edit</Text>
+					<TouchableOpacity style={styles.btn}>
+						<Text style={styles.textBtn}>Save</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -44,7 +42,7 @@ const PersonalEdit = ({ navigation }) => {
 	);
 };
 
-export default PersonalEdit;
+export default PersonalSave;
 
 const styles = StyleSheet.create({
 	container: {
