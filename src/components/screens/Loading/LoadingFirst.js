@@ -1,14 +1,14 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 const LoadingFirst = () => {
-    return (
-        <View>
-            <Text>Loading First</Text>
-        </View>
-    )
-}
+	return (
+		<View>
+			<Text>Loading First</Text>
+		</View>
+	);
+};
 
-export default LoadingFirst
+export default LoadingFirst;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
