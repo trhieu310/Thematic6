@@ -11,6 +11,9 @@ import Scan from 'components/screens/Scan';
 import History from 'components/screens/History';
 import Personal from 'components/screens/Personal';
 import LoadingFirst from 'components/screens/Loading/LoadingFirst';
+import Detail from 'components/screens/Detail';
+import PersonalEdit from 'components/screens/PersonalEdit';
+import PersonalSave from 'components/screens/PersonalSave';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +23,7 @@ const screenOptionStyle = {
 	},
 	headerTintColor: 'white',
 	headerBackTitle: 'Back',
+	headerShown: false,
 };
 
 const LoginStackNavigator = () => {
@@ -50,6 +54,7 @@ const SearchStackNavigator = () => {
 				headerShown: false,
 			}}>
 			<Stack.Screen name='Search' component={Search} />
+			<Stack.Screen name='Detail' component={Detail} />
 		</Stack.Navigator>
 	);
 };
@@ -86,6 +91,8 @@ const PersonalStackNavigator = () => {
 				headerShown: false,
 			}}>
 			<Stack.Screen name='Personal' component={Personal} />
+			<Stack.Screen name='PersonalInfo' component={PersonalEdit} />
+			<Stack.Screen name='PersonalSave' component={PersonalSave} />
 		</Stack.Navigator>
 	);
 };

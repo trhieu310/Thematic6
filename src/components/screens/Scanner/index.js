@@ -11,10 +11,13 @@ import Header from 'components/items/heads/Header';
 
 const Scanner = ({ navigation }) => {
 	const [cameraFacing, setCameraFacing] = useState('back');
-	const [cameraReady, setCameraReady] = useState(false);
+	// const [cameraReady, setCameraReady] = useState(false);
+	// const [cameraChanging, setCameraChanging] = useState(false);
 	const [barcodeRecognized, setBarcodeRecognized] = useState({});
 	let camera = null;
-	// const [cameraChanging, setCameraChanging] = useState(false);
+
+	const isFocused = useIsFocused();
+	const granted = useCameraPermission();
 
 	const handleChangeCameraType = () => {
 		switch (cameraFacing) {
@@ -33,35 +36,7 @@ const Scanner = ({ navigation }) => {
 		}
 	};
 
-	const renderBoundingBarcode = () => {
-		const { target, barcodes = [] } = barcodeRecognized;
-		return barcodes.map(barcode => {
-			const { bounds, type, data, rawData } = barcode;
-			console.warn(barcode);
-
-			if (type !== 'QR_CODE') return null;
-
-			return (
-				<View
-					style={{
-						...styles.boundingBarcode,
-						...bounds.size,
-						left: bounds.origin.x,
-						top: bounds.origin.y,
-					}}>
-					<Text>{data}</Text>
-				</View>
-			);
-		});
-	};
-	// const { bounds, type, data, rawData } = barcodes;
-
-	const isFocused = useIsFocused();
-
 	if (!isFocused || !navigation.isFocused) return null;
-
-	// eslint-disable-next-line react-hooks/rules-of-hooks
-	const granted = useCameraPermission();
 
 	if (granted === 'pending') {
 		return (
@@ -78,7 +53,28 @@ const Scanner = ({ navigation }) => {
 			</View>
 		);
 	}
-	// console.log('camera focused', isFocused);
+
+	const renderBoundingBarcode = () => {
+		const { target, barcodes = [] } = barcodeRecognized;
+		return barcodes.map(barcode => {
+			const { bounds, type, data, rawData } = barcode;
+			// console.warn(barcode);
+
+			if (type !== 'QR_CODE') return null;
+
+			return (
+				<View
+					style={{
+						...styles.boundingBarcode,
+						...bounds.size,
+						left: bounds.origin.x,
+						top: bounds.origin.y,
+					}}>
+					<Text>{data}</Text>
+				</View>
+			);
+		});
+	};
 
 	return (
 		<View style={styles.container}>

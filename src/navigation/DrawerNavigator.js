@@ -10,24 +10,23 @@ import {
 } from './StackNavigation';
 import Home from 'components/screens/Home';
 import Search from 'components/screens/Search';
+import auth from '@react-native-firebase/auth';
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
+	const user = auth().currentUser;
+
 	return (
 		<Drawer.Navigator
-		// drawerStyle={drawerStyle}
-		>
+			// drawerStyle={drawerStyle}
+			initialRouteName={user ? 'Home' : 'Login'}>
+			<Drawer.Screen name='Home' component={TabNavigator} />
 			<Drawer.Screen
-				name='Home'
-				component={TabNavigator}
-				// options={{
-				// 	drawerLabel: () => null,
-				// 	title: null,
-				// 	drawerIcon: () => null
-				// }}
+				name='Login'
+				component={LoginStackNavigator}
+				options={{ gestureEnabled: false }}
 			/>
-			<Drawer.Screen name='Login' component={LoginStackNavigator} />
 		</Drawer.Navigator>
 	);
 };

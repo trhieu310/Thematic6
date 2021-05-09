@@ -1,170 +1,242 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	StyleSheet,
 	Text,
 	View,
 	TouchableWithoutFeedback,
-	TouchableOpacity,
-	TextInput,
 	Keyboard,
 	Dimensions,
+	SafeAreaView,
+	ImageBackground,
+	Image,
+	ScrollView,
+	ToastAndroid,
+	Platform,
 } from 'react-native';
 
-import { Icon } from 'react-native-elements';
 import * as theme from '../../constants/global';
+import {
+	InputFieldLogin,
+	LinkButton,
+	LoginButton,
+	SocialButton,
+} from 'components/items';
+const backgroundImg = require('../../../assets/images/login_bg.png');
+const registerImg = require('../../../assets/images/rgt_image.jpg');
+const windowHeight = Dimensions.get('window').height;
+import auth from '@react-native-firebase/auth';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Login = ({ navigation }) => {
 	const [activeTab, setActiveTab] = useState('SignIn');
+	GoogleSignin.configure({
+		webClientId:
+			'315121569493-11klvb41cqbsu97b0hhfu584148nskuh.apps.googleusercontent.com',
+	});
+	async function onFacebookButtonPress() {
+		const result = await LoginManager.logInWithPermissions([
+			'public_profile',
+			'email',
+		]);
+
+		if (result.isCancelled) {
+			throw 'User cancelled the login process';
+		}
+
+		const data = await AccessToken.getCurrentAccessToken();
+
+		if (!data) {
+			throw 'Something went wrong obtaining access token';
+		}
+
+		const facebookCredential = auth.FacebookAuthProvider.credential(
+			data.accessToken,
+		);
+
+		return auth().signInWithCredential(facebookCredential);
+	}
+
+	async function onGoogleButtonPress() {
+		try {
+			await GoogleSignin.hasPlayServices();
+			const { idToken } = await GoogleSignin.signIn();
+			const googleCredential = auth.GoogleAuthProvider.credential(
+				idToken,
+			);
+			return auth().signInWithCredential(googleCredential);
+		} catch (error) {
+			if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+				showToastWithGravityAndOffset('Sign in was cancelled!');
+			} else if (error.code === statusCodes.IN_PROGRESS) {
+				showToastWithGravityAndOffset('Progressing...');
+			} else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+				showToastWithGravityAndOffset(
+					'Play services is not available!',
+				);
+			} else {
+				showToastWithGravityAndOffset(error.toString());
+			}
+		}
+		// Get the users ID token
+	}
+
+	const showToastWithGravityAndOffset = message => {
+		ToastAndroid.showWithGravityAndOffset(
+			message,
+			ToastAndroid.LONG,
+			ToastAndroid.BOTTOM,
+			25,
+			50,
+		);
+	};
+
+	const isEmptyOrNull = text => {
+		return text === null || text === '' ? true : false;
+	};
 
 	function SignIn() {
 		const [showLoginPassword, setShowLoginPassword] = useState(false);
 		const [email, setEmail] = useState('');
 		const [password, setPassword] = useState('');
+		const [isValid, setIsValid] = useState(true);
 
 		function isEmailValid(email) {
-			const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			return re.test(String(email).toLowerCase());
 		}
 
+		const onChangeTextEmail = email => {
+			setEmail(email);
+			setIsValid(isEmailValid(email));
+		};
+
+		const login = () => {
+			if (!isEmptyOrNull(email) && !isEmptyOrNull(password)) {
+				try {
+					auth()
+						.signInWithEmailAndPassword(email, password)
+						.then(() => {
+							console.log('User account signed in!');
+							navigation.navigate('Home');
+						})
+						.catch(error => {
+							if (
+								error.code.toString() ===
+								'auth/email-already-in-use'
+							) {
+								showToastWithGravityAndOffset(
+									'That email address is already in use!',
+								);
+								console.log(
+									'That email address is already in use!',
+								);
+							} else if (
+								error.code.toString() === 'auth/invalid-email'
+							) {
+								showToastWithGravityAndOffset(
+									'That email address is invalid!',
+								);
+								console.log('That email address is invalid!');
+							} else if (
+								error.code.toString() === 'auth/wrong-password'
+							) {
+								showToastWithGravityAndOffset(
+									'Wrong password!',
+								);
+								console.log('Wrong password!');
+							} else {
+								showToastWithGravityAndOffset(error.toString());
+								console.log(error.toString());
+							}
+						});
+				} catch (error) {
+					if (error.code.toString() === 'auth/email-already-in-use') {
+						console.log('That email address is already in use!');
+					} else if (error.code.toString() === 'auth/invalid-email') {
+						showToastWithGravityAndOffset(
+							'That email address is invalid!',
+						);
+					} else {
+						showToastWithGravityAndOffset(error.toString());
+						console.error(error);
+					}
+				}
+			} else {
+				showToastWithGravityAndOffset(
+					'Email and password is required!',
+				);
+			}
+		};
+
 		return (
-			<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-				<View style={styles.container}>
-					<View style={styles.bigCircle} />
-					<View style={styles.smallCircle} />
-					<View style={styles.centerizedView}>
-						<View style={styles.authBox}>
-							<View style={styles.logoBox}>
-								<Icon
-									color='#fff'
-									name='plane-departure'
-									type='font-awesome-5'
-									size={50}
-								/>
-							</View>
-							<Text style={styles.loginTitleText}>Login</Text>
-							<View style={styles.hr} />
-							<View
-								style={[
-									styles.inputView,
-									!isEmailValid(email) && email.length > 0
-										? styles.wrong
-										: '',
-								]}>
-								<Icon
-									style={{ paddingHorizontal: 4 }}
-									name='envelope'
-									type='font-awesome'
-									color='#d9d9d9'
-									size={22}
-								/>
-								<TextInput
-									style={styles.input}
-									placeholder='Email'
-									placeholderTextColor='#d9d9d9'
-									keyboardType='email-address'
-									textContentType='emailAddress'
-									autoCapitalize='none'
-									autoCompleteType='email'
-									returnKeyType='next'
-									onChangeText={text => setEmail(text)}
-								/>
-							</View>
-							<View style={styles.inputView}>
-								<Icon
-									style={{ paddingHorizontal: 4 }}
-									name='key'
-									type='font-awesome-5'
-									color='#d9d9d9'
-									size={22}
-								/>
-								<TextInput
-									style={styles.input}
-									placeholder='Password'
-									placeholderTextColor='#d9d9d9'
-									secureTextEntry={!showLoginPassword}
-									textContentType='password'
-									returnKeyType='done'
-									onChangeText={text => setPassword(text)}
-								/>
-								<TouchableOpacity
-									style={{ paddingVertical: 4 }}
-									onPress={() => {
-										setShowLoginPassword(
-											!showLoginPassword,
-										);
-									}}>
-									<Icon
-										style={{ paddingHorizontal: 4 }}
-										name={
-											!showLoginPassword
-												? 'eye'
-												: 'eye-slash'
-										}
-										type='font-awesome'
-										color='#d9d9d9'
-										size={22}
-									/>
-								</TouchableOpacity>
-							</View>
-							<TouchableOpacity
-								style={styles.loginButton}
-								onPress={() => navigation.navigate('Home')}>
-								<Text style={styles.loginButtonText}>
-									Login
-								</Text>
-							</TouchableOpacity>
-							<View style={styles.divided}>
-								<Text style={styles.dividedText}>OR</Text>
-							</View>
-							<View style={styles.socialSignin}>
-								<TouchableOpacity style={styles.socialButton}>
-									<View
-										style={[
-											styles.logoSocial,
-											styles.ggSocial,
-										]}>
-										<Icon
-											color='#fff'
-											name='google'
-											type='font-awesome-5'
-											size={25}
-										/>
-									</View>
-								</TouchableOpacity>
-								<TouchableOpacity style={styles.socialButton}>
-									<View
-										style={[
-											styles.logoSocial,
-											styles.fbSocial,
-										]}>
-										<Icon
-											color='#fff'
-											name='facebook-f'
-											type='font-awesome-5'
-											size={25}
-										/>
-									</View>
-								</TouchableOpacity>
-							</View>
-							<TouchableOpacity>
-								<Text style={styles.forgotPasswordText}>
-									Forgot Password?
-								</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								style={styles.registerSwitch}
-								onPress={() => setActiveTab('SignUp')}>
-								<Icon
-									color='#fff'
-									name='swap-horiz'
-									type='material'
-									size={25}
-								/>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
-			</TouchableWithoutFeedback>
+			<ImageBackground
+				style={styles.imageBackground}
+				source={backgroundImg}>
+				<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+					<ScrollView>
+						<SafeAreaView style={styles.container}>
+							<InputFieldLogin
+								name='envelope'
+								size={25}
+								type='font-awesome-5'
+								value={email}
+								color={!isValid ? theme.colors.RED : ''}
+								onChangeText={text => onChangeTextEmail(text)}
+								style={[styles.input, styles.inputTop]}
+							/>
+							<InputFieldLogin
+								name='key'
+								size={22}
+								type='font-awesome-5'
+								value={password}
+								onChangeText={text => setPassword(text)}
+								style={styles.input}
+								placeholder='Password'
+								secureTextEntry={true}
+							/>
+							<LoginButton
+								style={[styles.loginButton]}
+								onPress={() => login()}
+							/>
+
+							<LinkButton
+								text='Forgot your passwrord'
+								style={styles.forgotPasswordLinkButton}
+							/>
+
+							<SocialButton
+								name='facebook'
+								size={32}
+								text='Connect with Facebook'
+								style={[styles.fbLogin, styles.buttonGroup]}
+								onPress={() =>
+									onFacebookButtonPress().then(() => {
+										console.log('Signed in with Facebook!');
+										navigation.navigate('Home');
+									})
+								}
+							/>
+							<SocialButton
+								text='Connect with Google'
+								style={styles.buttonGroup}
+								onPress={() =>
+									onGoogleButtonPress().then(() => {
+										console.log('Signed in with Google!');
+										navigation.navigate('Home');
+									})
+								}
+							/>
+
+							<LinkButton
+								text="Don't have an account? Sign up"
+								style={styles.signupLinkButton}
+								onPress={() => setActiveTab('SignUp')}
+							/>
+						</SafeAreaView>
+					</ScrollView>
+				</TouchableWithoutFeedback>
+			</ImageBackground>
 		);
 	}
 
@@ -173,161 +245,232 @@ const Login = ({ navigation }) => {
 		const [name, setName] = useState('');
 		const [email, setEmail] = useState('');
 		const [password, setPassword] = useState('');
+		const [confirmPassword, setConfirmPassword] = useState('');
+		const [isRegisterEmail, setIsRegisterEmail] = useState(false);
+		const [isConfirmPassword, setIsConfirmPassword] = useState(false);
+		const [isValid, setIsValid] = useState(true);
 
-		function isEmailValid(email) {
-			const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+		const registerAccount = () => {
+			if (!isEmptyOrNull(email) && !isEmptyOrNull(password)) {
+				if (password === confirmPassword) {
+					try {
+						auth()
+							.createUserWithEmailAndPassword(email, password)
+							.then(() => {
+								console.log(
+									'User account created & signed in!',
+								);
+							})
+							.catch(error => {
+								if (
+									error.code.toString() ===
+									'auth/email-already-in-use'
+								) {
+									showToastWithGravityAndOffset(
+										'That email address is already in use!',
+									);
+									console.log(
+										'That email address is already in use!',
+									);
+								} else if (
+									error.code.toString() ===
+									'auth/invalid-email'
+								) {
+									showToastWithGravityAndOffset(
+										'That email address is invalid!',
+									);
+									console.log(
+										'That email address is invalid!',
+									);
+								} else {
+									showToastWithGravityAndOffset(
+										error.toString(),
+									);
+								}
+							});
+					} catch (error) {
+						if (error.code === 'auth/email-already-in-use') {
+							showToastWithGravityAndOffset(
+								'That email address is already in use!',
+							);
+							console.log(
+								'That email address is already in use!',
+							);
+						} else if (error.code === 'auth/invalid-email') {
+							showToastWithGravityAndOffset(
+								'That email address is invalid!',
+							);
+							console.log('That email address is invalid!');
+						} else {
+							showToastWithGravityAndOffset(error);
+						}
+					}
+				}
+			} else {
+				showToastWithGravityAndOffset(
+					'Email and password is required!',
+				);
+			}
+		};
+
+		const onChangeTextEmail = email => {
+			setEmail(email);
+			setIsValid(isEmailValid(email));
+		};
+
+		const onChangeTextConfirmHandle = text => {
+			setConfirmPassword(text);
+			text === password
+				? setIsConfirmPassword(true)
+				: setIsConfirmPassword(false);
+			console.log(password);
+		};
+
+		const isEmailValid = email => {
+			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			return re.test(String(email).toLowerCase());
-		}
+		};
 		return (
-			<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-				<View style={styles.container}>
-					<View style={styles.bigCircle} />
-					<View style={styles.smallCircle} />
-					<View style={styles.centerizedView}>
-						<View style={styles.authBox}>
-							<View style={styles.logoBox}>
-								<Icon
-									color='#fff'
-									name='plane-departure'
-									type='font-awesome-5'
-									size={50}
+			<ImageBackground
+				style={styles.imageBackground}
+				source={backgroundImg}>
+				<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+					{isRegisterEmail === true ? (
+						<ScrollView>
+							<SafeAreaView style={styles.container}>
+								<Image
+									source={registerImg}
+									style={[
+										styles.imageRegister,
+										styles.inputTop,
+									]}
 								/>
-							</View>
-							<Text style={styles.loginTitleText}>Register</Text>
-							<View style={styles.hr} />
-							<View style={styles.inputView}>
-								<Icon
-									style={{ paddingHorizontal: 4 }}
-									name='user-o'
-									type='font-awesome'
-									color='#d9d9d9'
-									size={22}
-								/>
-								<TextInput
-									style={styles.input}
-									placeholder='Name'
-									placeholderTextColor='#d9d9d9'
-									textContentType='name'
-									autoCapitalize='none'
-									returnKeyType='next'
-									onChangeText={text => setName(text)}
-								/>
-							</View>
-							<View
-								style={[
-									styles.inputView,
-									!isEmailValid(email) && email.length > 0
-										? styles.wrong
-										: '',
-								]}>
-								<Icon
-									style={{ paddingHorizontal: 4 }}
+								<View style={styles.textViewRegister}>
+									<Text style={styles.textRegister}>
+										Register
+									</Text>
+								</View>
+								<InputFieldLogin
 									name='envelope'
-									type='font-awesome'
-									color='#d9d9d9'
-									size={22}
-								/>
-								<TextInput
-									style={styles.input}
-									placeholder='Email'
-									placeholderTextColor='#d9d9d9'
-									keyboardType='email-address'
-									textContentType='emailAddress'
-									autoCapitalize='none'
-									autoCompleteType='email'
-									returnKeyType='next'
-									onChangeText={text => setEmail(text)}
-								/>
-							</View>
-							<View style={styles.inputView}>
-								<Icon
-									style={{ paddingHorizontal: 4 }}
-									name='key'
+									size={25}
 									type='font-awesome-5'
-									color='#d9d9d9'
-									size={22}
+									color={!isValid ? theme.colors.RED : ''}
+									value={email}
+									onChangeText={text =>
+										onChangeTextEmail(text)
+									}
+									style={[styles.input, styles.registerTop]}
 								/>
-								<TextInput
+								<InputFieldLogin
+									name='key'
+									size={22}
+									type='font-awesome-5'
+									value={password}
+									onChangeText={text => setPassword(text)}
 									style={styles.input}
 									placeholder='Password'
-									placeholderTextColor='#d9d9d9'
-									secureTextEntry={!showLoginPassword}
-									textContentType='password'
-									returnKeyType='done'
-									onChangeText={text => setPassword(text)}
+									secureTextEntry={true}
 								/>
-								<TouchableOpacity
-									style={{ paddingVertical: 4 }}
-									onPress={() => {
-										setShowLoginPassword(
-											!showLoginPassword,
-										);
-									}}>
-									<Icon
-										style={{ paddingHorizontal: 4 }}
-										name={
-											!showLoginPassword
-												? 'eye'
-												: 'eye-slash'
-										}
-										type='font-awesome'
-										color='#d9d9d9'
-										size={22}
-									/>
-								</TouchableOpacity>
-							</View>
-							<TouchableOpacity style={styles.loginButton}>
-								<Text style={styles.loginButtonText}>
-									Register
-								</Text>
-							</TouchableOpacity>
-							<View style={styles.divided}>
-								<Text style={styles.dividedText}>OR</Text>
-							</View>
-							<View style={styles.socialSignin}>
-								<TouchableOpacity style={styles.socialButton}>
-									<View
-										style={[
-											styles.logoSocial,
-											styles.ggSocial,
-										]}>
-										<Icon
-											color='#fff'
-											name='google'
-											type='font-awesome-5'
-											size={25}
-										/>
-									</View>
-								</TouchableOpacity>
-								<TouchableOpacity style={styles.socialButton}>
-									<View
-										style={[
-											styles.logoSocial,
-											styles.fbSocial,
-										]}>
-										<Icon
-											color='#fff'
-											name='facebook-f'
-											type='font-awesome-5'
-											size={25}
-										/>
-									</View>
-								</TouchableOpacity>
-							</View>
-							<TouchableOpacity
-								style={styles.registerSwitch}
-								onPress={() => setActiveTab('SignIn')}>
-								<Icon
-									color='#fff'
-									name='swap-horiz'
-									type='material'
-									size={25}
+								<InputFieldLogin
+									name='check'
+									size={22}
+									type='font-awesome-5'
+									color={
+										isConfirmPassword
+											? theme.colors.GREEN
+											: theme.colors.RED
+									}
+									value={confirmPassword}
+									onChangeText={text =>
+										onChangeTextConfirmHandle(text)
+									}
+									style={[
+										styles.input,
+										isConfirmPassword
+											? styles.errorInput
+											: '',
+									]}
+									placeholder='Confirm Password'
+									secureTextEntry={true}
 								/>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
-			</TouchableWithoutFeedback>
+								<LoginButton
+									onPress={() =>
+										registerAccount(() =>
+											navigation.navigate('Home'),
+										)
+									}
+									title='Register'
+									style={[styles.loginButton]}
+								/>
+								<LinkButton
+									text='Sign In'
+									style={styles.signupLinkButton}
+									onPress={() => setActiveTab('SignIn')}
+								/>
+							</SafeAreaView>
+						</ScrollView>
+					) : (
+						<ScrollView>
+							<SafeAreaView style={styles.container}>
+								<Image
+									source={registerImg}
+									style={[
+										styles.imageRegister,
+										styles.inputTop,
+									]}
+								/>
+								<View style={styles.textViewRegister}>
+									<Text style={styles.textRegister}>
+										Discover{'\n'}New Place
+									</Text>
+								</View>
+
+								<LoginButton
+									title='Register by Email/Password'
+									style={[
+										styles.loginButton,
+										styles.registerButton,
+									]}
+									onPress={() => setIsRegisterEmail(true)}
+								/>
+
+								<SocialButton
+									name='facebook'
+									size={32}
+									text='Connect with Facebook'
+									style={[styles.fbLogin, styles.buttonGroup]}
+									onPress={() =>
+										onFacebookButtonPress().then(() => {
+											console.log(
+												'Signed in with Facebook!',
+											);
+											navigation.navigate('Home');
+										})
+									}
+								/>
+								<SocialButton
+									text='Connect with Google'
+									style={styles.buttonGroup}
+									onPress={() =>
+										onGoogleButtonPress().then(() => {
+											console.log(
+												'Signed in with Google!',
+											);
+											navigation.navigate('Home');
+										})
+									}
+								/>
+
+								<LinkButton
+									text='Sign In'
+									style={styles.signupLinkButton}
+									onPress={() => setActiveTab('SignIn')}
+								/>
+							</SafeAreaView>
+						</ScrollView>
+					)}
+				</TouchableWithoutFeedback>
+			</ImageBackground>
 		);
 	}
 
@@ -340,185 +483,70 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		position: 'relative',
-	},
-	bigCircle: {
-		width: Dimensions.get('window').height * 0.6,
-		height: Dimensions.get('window').height * 0.6,
-		backgroundColor: theme.colors.PRIMARY,
-		borderRadius: 1000,
-		position: 'absolute',
-		right: Dimensions.get('window').width * 0.25,
-		top: -50,
-	},
-	smallCircle: {
-		width: Dimensions.get('window').height * 0.4,
-		height: Dimensions.get('window').height * 0.4,
-		backgroundColor: theme.colors.PRIMARY,
-		borderRadius: 1000,
-		position: 'absolute',
-		bottom: Dimensions.get('window').width * -0.2,
-		right: Dimensions.get('window').width * -0.3,
-	},
-	centerizedView: {
-		width: '100%',
-		top: '15%',
-	},
-	authBox: {
-		width: '90%',
-		backgroundColor: '#fafafa',
-		borderRadius: 20,
-		borderBottomEndRadius: 3,
-		alignSelf: 'center',
-		paddingHorizontal: 14,
-		paddingBottom: 30,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.25,
-		shadowRadius: 3.84,
-		elevation: 5,
-	},
-	logoBox: {
-		width: 100,
-		height: 100,
-		backgroundColor: theme.colors.PRIMARY,
-		borderRadius: 1000,
-		alignSelf: 'center',
-		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'center',
-		top: -50,
-		marginBottom: -50,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.2,
-		shadowRadius: 1.41,
-		elevation: 2,
 	},
-	loginTitleText: {
-		fontSize: 26,
-		fontWeight: 'bold',
-		marginTop: 10,
-		textAlign: 'center',
-	},
-	hr: {
-		width: '100%',
-		height: 0.5,
-		backgroundColor: '#444',
-		marginTop: 6,
-	},
-	inputBox: {
-		marginTop: 10,
-	},
-	inputLabel: {
-		fontSize: 18,
-		marginBottom: 6,
-	},
-	loginButton: {
-		backgroundColor: theme.colors.PRIMARY,
-		marginTop: 10,
-		paddingVertical: 10,
-		borderRadius: 4,
-	},
-	loginButtonText: {
-		color: '#fff',
-		textAlign: 'center',
-		fontSize: 20,
-		fontWeight: 'bold',
-	},
-	registerText: {
-		textAlign: 'center',
-		marginTop: 20,
-		fontSize: 16,
-	},
-	forgotPasswordText: {
-		textAlign: 'center',
-		marginTop: 12,
-		fontSize: 16,
-	},
-	divided: {
-		paddingVertical: 4,
-		alignItems: 'center',
+	scrollView: {
+		flex: 1,
+		alignContent: 'center',
 		justifyContent: 'center',
 	},
-	dividedText: {
-		borderBottomWidth: 1,
-		borderBottomColor: '#d9d9d9',
-		width: 100,
-		textAlign: 'center',
-		fontSize: 18,
-	},
-	inputView: {
-		height: 40,
-		borderWidth: 1,
-		borderColor: '#d9d9d9',
-		borderRadius: 3,
-		marginTop: 10,
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
+	imageBackground: {
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		width: Dimensions.get('window').width,
+		height: Dimensions.get('window').height,
 	},
 	input: {
-		flex: 1,
-		height: 40,
-		fontSize: 16,
-		paddingHorizontal: 4,
-		color: '#777',
+		marginVertical: 5,
 	},
-	socialSignin: {
-		flexDirection: 'row',
-		marginVertical: 4,
-		alignItems: 'center',
-		justifyContent: 'center',
+	inputTop: {
+		marginTop:
+			windowHeight > 640 ? (Platform.OS === 'ios' ? 200 : 150) : 45,
 	},
-	socialButton: {
-		width: 40,
-		height: 40,
-		padding: 10,
-		marginTop: 10,
-		alignItems: 'center',
-		justifyContent: 'flex-end',
-		marginHorizontal: 8,
+	registerTop: {
+		marginTop: 25,
 	},
-	logoSocial: {
-		height: 35,
-		width: 35,
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderRadius: 17,
-	},
-	ggSocial: {
-		backgroundColor: theme.colors.GOOGLE,
-	},
-	fbSocial: {
+	fbLogin: {
 		backgroundColor: theme.colors.FACEBOOK,
 	},
-	registerSwitch: {
-		width: 35,
-		height: 35,
-		textAlign: 'center',
-		justifyContent: 'center',
-		position: 'absolute',
-		bottom: 0,
-		right: 0,
-		backgroundColor: theme.colors.PRIMARY,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.2,
-		shadowRadius: 1.41,
-		elevation: 2,
-		borderTopStartRadius: 15,
-		borderBottomEndRadius: 3,
+	loginButton: {
+		marginTop: 37,
 	},
-	wrong: {
+	buttonGroup: {
+		marginVertical: 16,
+	},
+	forgotPasswordLinkButton: {
+		marginTop: 25,
+		marginBottom: 50,
+	},
+	signupLinkButton: {
+		marginTop: 15,
+	},
+	registerButton: {
+		borderRadius: 15,
+		marginTop: 65,
+		marginBottom: 16,
+	},
+	imageRegister: {
+		width: 88,
+		height: 88,
+		borderRadius: 25,
+	},
+	textViewRegister: {
+		width: 205,
+		paddingHorizontal: 5,
+		marginTop: 25,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	textRegister: {
+		fontSize: 30,
+		fontWeight: 'bold',
+		color: theme.colors.WHITE,
+		textAlign: 'center',
+	},
+	errorInput: {
 		borderColor: theme.colors.RED,
 	},
 });
