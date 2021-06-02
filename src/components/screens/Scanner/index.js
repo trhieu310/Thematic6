@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/core';
 import { Button } from 'react-native-elements';
 
@@ -8,12 +8,15 @@ import * as theme from 'constants/global';
 import { RNCamera } from 'react-native-camera';
 import useCameraPermission from 'hook/useCameraPermission';
 import Header from 'components/items/heads/Header';
+import database from '@react-native-firebase/database';
+import { databaseUrl } from '../../../constants/global';
 
 const Scanner = ({ navigation }) => {
 	const [cameraFacing, setCameraFacing] = useState('back');
 	// const [cameraReady, setCameraReady] = useState(false);
 	// const [cameraChanging, setCameraChanging] = useState(false);
 	const [barcodeRecognized, setBarcodeRecognized] = useState({});
+	const [isLoading, setIsLoading] = useState(false);
 	let camera = null;
 
 	const isFocused = useIsFocused();
@@ -54,26 +57,72 @@ const Scanner = ({ navigation }) => {
 		);
 	}
 
+	const LoadingScreen = () => {
+		return (
+			<View style={styles.layerLoading}>
+				<ActivityIndicator size='large' color='#666666' />
+				<Text> Loading ... </Text>
+			</View>
+		);
+	};
+
+	const getDataPlaceInfo = barcode => {
+		const { bounds, type, data, rawData } = barcode;
+		const refUser = databaseUrl.ROOT + databaseUrl.PLACE + data;
+		database()
+			.ref(refUser)
+			.once('value')
+			.then(snapshot => {
+				setBarcodeRecognized(null);
+				if (snapshot.val() !== 'undefined' && snapshot.val() !== null) {
+					setIsLoading(true);
+					setTimeout(() => {
+						setIsLoading(false);
+						navigation.navigate('Detail', { item: snapshot.val() });
+					}, 500);
+				} else {
+				}
+			});
+	};
+
 	const renderBoundingBarcode = () => {
-		const { target, barcodes = [] } = barcodeRecognized;
-		return barcodes.map(barcode => {
-			const { bounds, type, data, rawData } = barcode;
-			// console.warn(barcode);
+		try {
+			const { target, barcodes = [] } = barcodeRecognized;
+			return barcodes.map(barcode => {
+				const { bounds, type, data, rawData } = barcode;
+				// console.warn(barcode);
 
-			if (type !== 'QR_CODE') return null;
-
+				if (type !== 'QR_CODE') return null;
+				getDataPlaceInfo(barcode);
+				// return (
+				// 	<View
+				// 		style={{
+				// 			...styles.boundingBarcode,
+				// 			...bounds.size,
+				// 			left: bounds.origin.x,
+				// 			top: bounds.origin.y,
+				// 		}}>
+				// 		<Text>{data}</Text>
+				// 	</View>
+				// );
+			});
+		} catch (error) {
 			return (
 				<View
 					style={{
 						...styles.boundingBarcode,
-						...bounds.size,
-						left: bounds.origin.x,
-						top: bounds.origin.y,
+						bottom: 150,
+						left: 80,
 					}}>
-					<Text>{data}</Text>
+					<Text
+						style={{
+							color: '#ffffff',
+						}}>
+						Not found data for this QR Code
+					</Text>
 				</View>
 			);
-		});
+		}
 	};
 
 	return (
@@ -106,6 +155,7 @@ const Scanner = ({ navigation }) => {
 				</View>
 			</View>
 			{renderBoundingBarcode()}
+			{isLoading && <LoadingScreen />}
 
 			<View style={styles.tools}>
 				<View style={styles.gridContainer}>
@@ -225,6 +275,17 @@ const styles = StyleSheet.create({
 		backgroundColor: '#005affa3',
 		borderRadius: 10,
 		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	layerLoading: {
+		position: 'absolute',
+		display: 'flex',
+		backgroundColor: 'rgba(255, 255, 255, .6)',
+		width: '100%',
+		height: '100%',
+		top: 0,
+		left: 0,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},

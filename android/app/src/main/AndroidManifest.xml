@@ -22,13 +22,13 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
-      <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyA5vqtQ_u9gebimOHGpVpYyCSArQ5qSAaY" />
+      <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBQse7-yrXDrirwDzfkt8AuUNOR54phOgc" />
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
         android:launchMode="singleTask"
-        android:windowSoftInputMode="adjustResize">
+        android:windowSoftInputMode="stateUnspecified|adjustPan">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />

@@ -20,7 +20,7 @@ const DrawerNavigator = () => {
 	return (
 		<Drawer.Navigator
 			// drawerStyle={drawerStyle}
-			initialRouteName={user ? 'Home' : 'Login'}>
+			initialRouteName={'Home'}>
 			<Drawer.Screen name='Home' component={TabNavigator} />
 			<Drawer.Screen
 				name='Login'

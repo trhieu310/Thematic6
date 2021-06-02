@@ -8,11 +8,13 @@ const ButtonSetting = ({
 	onPress,
 	textStyle,
 	icon,
+	disabled=false,
 	text = 'text setting',
 	backgroundColor = '#81BDF2',
 }) => {
 	return (
 		<TouchableOpacity
+			disabled={disabled}
 			style={[
 				styles.container,
 				style,

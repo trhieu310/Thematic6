@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -15,15 +15,60 @@ import { colors } from '../../constants/global';
 import { AirbnbRating, Rating } from 'react-native-elements';
 import * as Progress from 'react-native-progress';
 import { Icon } from 'react-native-elements';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import { databaseUrl } from '../../constants/global';
 
 const defaultImage = require('../../../assets/images/home_bg.jpg');
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const Detail = ({ navigation, image }) => {
+const Detail = ({ navigation, image, route }) => {
+	const { item } = route.params;
+	const [data, setData] = useState([]);
+	useEffect(() => {
+		var currentdate = new Date();
+		var datetime =
+			currentdate.getDate() +
+			'-' +
+			(currentdate.getMonth() + 1) +
+			'-' +
+			currentdate.getFullYear() +
+			' ' +
+			currentdate.getHours() +
+			':' +
+			currentdate.getMinutes() +
+			':' +
+			currentdate.getSeconds();
+
+		if (auth().currentUser) {
+			const ref =
+				databaseUrl.ROOT + databaseUrl.HISTORY + auth().currentUser.uid;
+			
+			console.log(ref);
+			database()
+				.ref(ref)
+				.once('value')
+				.then(function (snapshot) {
+					setData(snapshot.val());
+				});
+			const newData = {
+				placeId: item.placeId,
+				time: datetime,
+			};
+			let tempData = data;
+			tempData.push(newData);
+			console.log(tempData);
+			setData(tempData);
+			database()
+				.ref(ref)
+				.set(tempData)
+				.then(() => console.log('Data set.'));
+		}
+	}, []);
 	return (
 		<SafeAreaView style={styles.container}>
-			<Header navigation={navigation} back title='Vinh Ha Long' />
+			<Header navigation={navigation} back title={item.name} />
 			<View style={styles.contentHeader}>
 				<View style={styles.imageView}>
 					<Image
@@ -32,7 +77,7 @@ const Detail = ({ navigation, image }) => {
 					/>
 				</View>
 				<View style={styles.headerView}>
-					<Text style={styles.title}>Vinh Ha Long</Text>
+					<Text style={styles.title}>{item.name}</Text>
 					<View style={styles.feedbackView}>
 						<Text>4,6 </Text>
 						<Rating
@@ -44,7 +89,7 @@ const Detail = ({ navigation, image }) => {
 						<Text>(4,654)</Text>
 					</View>
 					<Text style={styles.address}>
-						Thanh pho Ha Long, Quang Ninh
+						{item.address.longAddress}
 					</Text>
 				</View>
 			</View>
@@ -107,10 +152,13 @@ const Detail = ({ navigation, image }) => {
 					</View>
 				</View>
 				<View style={styles.descriptionView}>
-					<Text style={styles.descriptionText}>
-						Nhiều đảo đá vôi cây cối um tùm nằm dọc điểm du lịch nổi
-						bật với hoạt động lặn, leo núi đá vôi và đi bộ đường dài
-					</Text>
+					{item.introduce.map((e, i) => {
+						return (
+							<Text key={e + i} style={styles.descriptionText}>
+								{e}
+							</Text>
+						);
+					})}
 				</View>
 				<View style={styles.pictureView}>
 					<View style={styles.locationView}>
@@ -121,7 +169,7 @@ const Detail = ({ navigation, image }) => {
 							color='#98ccfd'
 						/>
 						<Text style={styles.locationText}>
-							Thành phố Hạ Long, Quảng Ninh
+							{item.address.longAddress}
 						</Text>
 					</View>
 					<View style={styles.locationView}>
@@ -131,14 +179,14 @@ const Detail = ({ navigation, image }) => {
 							type='font-awesome-5'
 							color='#98ccfd'
 						/>
-						<Text style={styles.locationText}>Do khoang cach</Text>
+						<Text style={styles.locationText}>Đo khoảng cách</Text>
 					</View>
 					<View style={styles.pictureImageView}>
 						<Image
 							source={defaultImage}
 							style={styles.pictureImage}
 						/>
-						<Text style={styles.pictureImageText}>Anh</Text>
+						<Text style={styles.pictureImageText}>Ảnh</Text>
 					</View>
 					<TouchableOpacity style={styles.locationView}>
 						<Icon
@@ -147,7 +195,7 @@ const Detail = ({ navigation, image }) => {
 							type='font-awesome-5'
 							color='#98ccfd'
 						/>
-						<Text style={styles.locationText}>Them anh</Text>
+						<Text style={styles.locationText}>Thêm ảnh</Text>
 					</TouchableOpacity>
 				</View>
 				<View style={styles.rateAndFeedbackView}>
@@ -173,32 +221,31 @@ const Detail = ({ navigation, image }) => {
 					</View>
 				</View>
 				<View style={styles.detailView}>
-					<Text style={styles.detailTitle}>Vịnh hạ long</Text>
-					<Text style={styles.detailContent}>
-						Vịnh hạ long là một vịnh nhỏ thuộc phần bờ tây vịnh Bắc
-						Bộ tại khu vực biển Đông Bắc Việt Nam, bao gồm vùng biển
-						đảo của thành phố Hạ Long thuộc tỉnh Quảng Ninh.
-					</Text>
+					<Text style={styles.detailTitle}>{item.name}</Text>
+					<Text style={styles.detailContent}>{item.description}</Text>
 					<View style={styles.detailRowView}>
-						<Text style={styles.detailStartText}>Dien tich:</Text>
-						<Text style={styles.detailEndText}>1553 km3</Text>
+						<Text style={styles.detailStartText}>Diện tích:</Text>
+						<Text style={styles.detailEndText}>{item.area}</Text>
 					</View>
 					<View style={styles.detailRowView}>
-						<Text style={styles.detailStartText}>Do cao:</Text>
-						<Text style={styles.detailEndText}>100 m</Text>
+						<Text style={styles.detailStartText}>Độ cao:</Text>
+						<Text style={styles.detailEndText}>{item.height}</Text>
 					</View>
-					<View style={styles.locationView}>
-						<Icon
-							size={22}
-							name='hotel'
-							type='font-awesome-5'
-							color='#98ccfd'
-						/>
-						<Text style={styles.locationText}>
-							Khách sạn 3* trung bình 788.608đ, Khách sạn 5* trung
-							bình 1.333.996đ
-						</Text>
-					</View>
+					{item.hotels.map((e, i) => {
+						return (
+							<View style={styles.locationView} key={i}>
+								<Icon
+									size={22}
+									name='hotel'
+									type='font-awesome-5'
+									color='#98ccfd'
+								/>
+								<Text style={styles.locationText}>
+									{e.name + ' ' + e.price}
+								</Text>
+							</View>
+						);
+					})}
 				</View>
 				<View
 					style={{
