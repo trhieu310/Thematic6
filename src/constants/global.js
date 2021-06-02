@@ -18,6 +18,7 @@ const colors = {
 	GRAY: '#555555',
 	YELLOWORANGE: '#F8B712',
 	GREEN: '#00FF00',
+	SUCCESS: '#31a24c',
 };
 const fontsize = {
 	BASE: 13,
@@ -42,7 +43,7 @@ const apiCall = {
 const databaseUrl = {
 	ROOT: 'checkin/',
 	HISTORY: 'histories/',
-	PLACE: 'places/'
+	PLACE: 'places/',
 };
 
 export { colors, fontsize, HEIGHT, WIDTH, key, apiCall, databaseUrl };

@@ -14,7 +14,52 @@ import { colors, fontsize } from 'constants/global';
 import { TouchableRipple } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
-import { Button } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+
+const suggestList = [
+	{
+		icon: 'map-marker-alt',
+		color: colors.SUCCESS,
+		text: 'Địa điểm đẹp',
+	},
+	{
+		icon: 'hamburger',
+		color: colors.FACEBOOK,
+		text: 'Món ăn ngon',
+	},
+	{
+		icon: 'hotel',
+		color: colors.ORANGE,
+		text: 'Nhà nghỉ sang chảnh',
+	},
+];
+
+const historyList = [
+	{
+		sourceImage: require('assets/images/home_bg.jpg'),
+		name: 'Vịnh Hạ Long - Quảng Ninh',
+		color: colors.SUCCESS,
+		time: '16:00:23',
+		date: '23/06/2020',
+		place: 'Quảng Ninh',
+	},
+	{
+		sourceImage: require('assets/images/home_bg.jpg'),
+		name: 'Vịnh Hạ Long - Quảng Ninh',
+		color: colors.SUCCESS,
+		time: '16:00:23',
+		date: '23/06/2020',
+		place: 'Quảng Ninh',
+	},
+	{
+		sourceImage: require('assets/images/home_bg.jpg'),
+		name: 'Vịnh Hạ Long - Quảng Ninh',
+		color: colors.SUCCESS,
+		time: '16:00:23',
+		date: '23/06/2020',
+		place: 'Quảng Ninh',
+	},
+];
 
 const ButtonRipple = ({ style, icon, onPress, children, ...props }) => {
 	return (
@@ -63,6 +108,7 @@ const CardRipple = ({ image, children, title, onPress, ...props }) => {
 const Home = ({ navigation }) => {
 	const [initializing, setInitializing] = useState(true);
 	const [user, setUser] = useState();
+	// const navigation = useNavigation();
 
 	const onAuthStateChanged = user => {
 		setUser(user);
@@ -73,6 +119,10 @@ const Home = ({ navigation }) => {
 		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 		return subscriber; // unsubscribe on unmount
 	}, []);
+
+	const navigatetoHistory = () => {
+		navigation.navigate('History');
+	};
 
 	if (initializing) return null;
 	if (!user) {
@@ -96,12 +146,12 @@ const Home = ({ navigation }) => {
 										<Icon
 											name='check-circle'
 											size={26}
-											color={colors.SUCCESS}
+											color={colors.GOOGLE}
 										/>
 									</View>
 									<View style={styles.viewHeader}>
 										<Text style={styles.header}>
-											Suggestion
+											Đề xuất cho bạn
 										</Text>
 									</View>
 								</View>
@@ -116,281 +166,134 @@ const Home = ({ navigation }) => {
 												styles.grid,
 												styles.fillFullWidth,
 											]}>
-											<View style={styles.gridItem}>
-												<ButtonRipple
-													onPress={() => {}}
-													icon={
-														<Icon
-															name='map-marker-alt'
-															style='regular'
-															size={34}
-															color={
-																colors.SUCCESS
-															}
-														/>
-													}>
-													<Text>Địa điểm đẹp</Text>
-												</ButtonRipple>
-											</View>
-											<View style={styles.gridItem}>
-												<ButtonRipple
-													onPress={() => {}}
-													icon={
-														<Icon
-															name='hamburger'
-															style='regular'
-															size={34}
-															color={
-																colors.FACEBOOK
-															}
-														/>
-													}>
-													<Text>Món ăn ngon</Text>
-												</ButtonRipple>
-											</View>
-											<View style={styles.gridItem}>
-												<ButtonRipple
-													onPress={() => {}}
-													icon={
-														<Icon
-															name='hotel'
-															style='regular'
-															size={34}
-															color={
-																colors.ORANGE
-															}
-														/>
-													}>
-													<Text>
-														Nhà nghỉ sang chảnh
-													</Text>
-												</ButtonRipple>
-											</View>
+											{suggestList.map((e, i) => (
+												<View
+													key={i}
+													style={styles.gridItem}>
+													<ButtonRipple
+														onPress={() => {}}
+														icon={
+															<Icon
+																name={e.icon}
+																style='regular'
+																size={34}
+																color={e.color}
+															/>
+														}>
+														<Text>{e.text}</Text>
+													</ButtonRipple>
+												</View>
+											))}
 										</View>
 									</View>
 								</View>
 							</View>
 							<View style={styles.py4}>
-								<View style={styles.title}>
-									<View style={styles.titleIcon}>
-										<Icon
-											name='map-marked-alt'
-											size={26}
-											color={colors.SUCCESS}
-										/>
+								<View style={styles.titleFlex}>
+									<View style={styles.title}>
+										<View style={styles.titleIcon}>
+											<Icon
+												name='map-marked-alt'
+												size={26}
+												color={colors.GOOGLE}
+											/>
+										</View>
+										<View style={styles.viewHeader}>
+											<Text style={styles.header}>
+												Lịch sử
+											</Text>
+										</View>
 									</View>
-									<View style={styles.viewHeader}>
-										<Text style={styles.header}>
-											History
-										</Text>
+									<View>
+										<TouchableOpacity
+											onPress={navigatetoHistory}>
+											<Text
+												style={
+													styles.seeMore
+												}>{`Xem thêm >>`}</Text>
+										</TouchableOpacity>
 									</View>
 								</View>
 
 								<View style={styles.py4}>
-									<View style={styles.py4}>
-										<CardRipple
-											image={
-												<Image
-													style={[
-														styles.fillFullWidth,
-														{ height: 100 },
-													]}
-													source={require('assets/images/home_bg.jpg')}></Image>
-											}
-											title={
-												<Text style={styles.textTitle}>
-													Vịnh Hạ Long - Quảng Ninh
-												</Text>
-											}
-											onPress={() => {}}>
-											<View style={styles.mynev4}>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='clock'
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text style={styles.header}>
-														16:00:23
+									{historyList.map((e, i) => (
+										<View key={i} style={styles.py4}>
+											<CardRipple
+												image={
+													<Image
+														style={[
+															styles.fillFullWidth,
+															{ height: 100 },
+														]}
+														source={
+															e.sourceImage
+														}></Image>
+												}
+												title={
+													<Text
+														style={
+															styles.textTitle
+														}>
+														{e.name}
 													</Text>
+												}
+												onPress={() => {}}>
+												<View style={styles.mynev4}>
+													<View
+														style={[
+															styles.inlineFlex,
+															styles.py4,
+														]}>
+														<Icon
+															style={styles.pr8}
+															name='clock'
+															size={
+																fontsize.LITTLE_BIG_TITLE
+															}
+															color={e.color}
+														/>
+														<Text
+															style={
+																styles.header
+															}>
+															{e.time}
+														</Text>
+													</View>
+													<View
+														style={[
+															styles.inlineFlex,
+															styles.py4,
+														]}>
+														<Icon
+															style={styles.pr8}
+															name='calendar-alt'
+															size={
+																fontsize.LITTLE_BIG_TITLE
+															}
+															color={e.color}
+														/>
+														<Text>{e.date}</Text>
+													</View>
+													<View
+														style={[
+															styles.inlineFlex,
+															styles.py4,
+														]}>
+														<Icon
+															style={styles.pr8}
+															name='map-marker'
+															solid
+															size={
+																fontsize.LITTLE_BIG_TITLE
+															}
+															color={e.color}
+														/>
+														<Text>{e.place}</Text>
+													</View>
 												</View>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='calendar-alt'
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text>23/06/2020</Text>
-												</View>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='map-marker'
-														solid
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text>Quảng Ninh</Text>
-												</View>
-											</View>
-										</CardRipple>
-									</View>
-									<View style={styles.py4}>
-										<CardRipple
-											image={
-												<Image
-													style={[
-														styles.fillFullWidth,
-														{ height: 100 },
-													]}
-													source={require('assets/images/home_bg.jpg')}></Image>
-											}
-											title={
-												<Text style={styles.textTitle}>
-													Vịnh Hạ Long - Quảng Ninh
-												</Text>
-											}
-											onPress={() => {}}>
-											<View style={styles.mynev4}>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='clock'
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text style={styles.header}>
-														16:00:23
-													</Text>
-												</View>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='calendar-alt'
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text>23/06/2020</Text>
-												</View>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='map-marker'
-														solid
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text>Quảng Ninh</Text>
-												</View>
-											</View>
-										</CardRipple>
-									</View>
-									<View style={styles.py4}>
-										<CardRipple
-											image={
-												<Image
-													style={[
-														styles.fillFullWidth,
-														{ height: 100 },
-													]}
-													source={require('assets/images/home_bg.jpg')}></Image>
-											}
-											title={
-												<Text style={styles.textTitle}>
-													Vịnh Hạ Long - Quảng Ninh
-												</Text>
-											}
-											onPress={() => {}}>
-											<View style={styles.mynev4}>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='clock'
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text style={styles.header}>
-														16:00:23
-													</Text>
-												</View>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='calendar-alt'
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text>23/06/2020</Text>
-												</View>
-												<View
-													style={[
-														styles.inlineFlex,
-														styles.py4,
-													]}>
-													<Icon
-														style={styles.pr8}
-														name='map-marker'
-														solid
-														size={
-															fontsize.LITTLE_BIG_TITLE
-														}
-														color={colors.SUCCESS}
-													/>
-													<Text>Quảng Ninh</Text>
-												</View>
-											</View>
-										</CardRipple>
-									</View>
+											</CardRipple>
+										</View>
+									))}
 								</View>
 							</View>
 						</View>
@@ -437,13 +340,31 @@ const styles = StyleSheet.create({
 		flexWrap: 'nowrap',
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingVertical: 5
+		paddingVertical: 5,
+		flex: 1,
+		width: '100%',
+	},
+
+	titleFlex: {
+		// flex: 1,
+		width: '100%',
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'baseline',
 	},
 	titleIcon: {
 		// padding: 8,
 	},
+
+	seeMore: {
+		fontSize: 12,
+		fontStyle: 'italic',
+		textDecorationLine: 'underline',
+		color: colors.PRIMARY,
+	},
 	viewHeader: {
-		marginLeft: 5
+		marginLeft: 5,
 	},
 	header: {
 		fontSize: fontsize.TITLE,
@@ -465,7 +386,6 @@ const styles = StyleSheet.create({
 		// flex: 1,
 	},
 	buttonBouding: { padding: 4, height: 100 },
-
 	buttonBorder: {
 		borderWidth: 1,
 		borderColor: '#f1f1f1',
