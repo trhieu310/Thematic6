@@ -19,7 +19,7 @@ import MapView, {
 	AnimatedRegion,
 	Animated,
 } from 'react-native-maps';
-import { key, apiCall } from '../../constants/global';
+import { key, apiCall, colors } from '../../constants/global';
 import useLocationPermission from 'hook/useLocationPermission';
 import { Icon } from 'react-native-elements';
 import { SearchItem } from 'components/items';
@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
 		top: 2,
 	},
 	inputSearch: {
+		color: colors.BLACK,
 		flex: 1,
 		height: 48,
 		fontSize: 18,
@@ -228,6 +229,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: 120,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 });
