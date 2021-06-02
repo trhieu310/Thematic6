@@ -18,7 +18,6 @@ const colors = {
 	GRAY: '#555555',
 	YELLOWORANGE: '#F8B712',
 	GREEN: '#00FF00',
-	SUCCESS: '#31a24c',
 };
 const fontsize = {
 	BASE: 13,
@@ -26,7 +25,7 @@ const fontsize = {
 };
 
 const key = {
-	API_PLACE: 'AIzaSyA5vqtQ_u9gebimOHGpVpYyCSArQ5qSAaY',
+	API_PLACE: 'AIzaSyBQse7-yrXDrirwDzfkt8AuUNOR54phOgc',
 };
 
 const apiCall = {

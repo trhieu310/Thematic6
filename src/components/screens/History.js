@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	SafeAreaView,
 	View,
@@ -11,6 +11,10 @@ import {
 import { SearchBar } from 'react-native-elements';
 import { Icon } from 'react-native-vector-icons/FontAwesome5';
 import Header from '../items/heads/Header';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import { databaseUrl } from '../../constants/global';
+import firestore from '@react-native-firebase/firestore';
 
 const { width, height } = Dimensions.get('window');
 
@@ -106,41 +110,129 @@ const Item = ({ title1, title2, time1, time2, image }) => (
 );
 
 const History = ({ navigation }) => {
+	const [user, setUser] = useState(auth().currentUser);
+	const [history, setHistory] = useState([]);
+	const [listHist, setListHist] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		const checkUser = async () => {
+			await auth().onAuthStateChanged(user => {
+				setUser(user);
+			});
+		};
+
+		const getHistory = async () => {
+			console.log('GET HIS');
+			if (user) {
+				let temp = [];
+				const ref = databaseUrl.ROOT + databaseUrl.HISTORY + user.uid;
+				await database()
+					.ref(ref)
+					.once('value')
+					.then(snapshot => {
+						snapshot.forEach(e => {
+							let te = e.toJSON();
+							temp.push({
+								placeId: te.placeId,
+								time: te.time,
+							});
+						});
+					});
+				setListHist(temp);
+			}
+		};
+
+		const getPlace = async () => {
+			setIsLoading(true);
+			const ref = databaseUrl.ROOT + databaseUrl.PLACE;
+			let te = [];
+			if (listHist.length > 0) {
+				console.log('GET PLACE');
+				listHist.forEach(e => {
+					const d = database()
+						.ref(ref + e.placeId)
+						.on('value' ,snapshot => {
+							const ts = snapshot.toJSON();
+							console.log(ts);
+							te.push({
+								id: e.placeId + e.time,
+								name: ts.name,
+								city: ts.address.city,
+								time1: e.time.split(' ')[1],
+								time2: e.time.split(' ')[0],
+								uri: ts.uri,
+							});
+						});
+				});
+				console.log(te);
+				setHistory(te);
+			}
+			setIsLoading(false);
+		};
+
+		checkUser();
+		getHistory();
+		getPlace();
+		return history;
+	}, []);
+
+	const RenderEmpty = () => {
+		return (
+			<View style={styles.emptyWrapper}>
+				<Image
+					style={styles.emptyImage}
+					source={require('../../../assets/unnamed.jpeg')}
+				/>
+				<Text style={{ paddingTop: 10, fontSize: 18 }}>
+					User not log in.
+				</Text>
+			</View>
+		);
+	};
+
 	const renderItem = ({ item }) => (
 		<Item
-			title1={item.title1}
-			title2={item.title2}
+			title1={item.name}
+			title2={item.city}
 			time1={item.time1}
 			time2={item.time2}
 			image={{ uri: item.uri }}
 		/>
 	);
 
+	if (isLoading) return null;
 	return (
 		<SafeAreaView style={styles.container}>
 			<Header navigation={navigation} title='History' />
-			<View style={styles.searchbar}>
-				<View style={styles.search}>
-					<SearchBar
-						round
-						clearIcon={{ size: 24 }}
-						searchIcon={{ size: 24 }}
-						// onChangeText={text => searchFilterFunction(text)}
-						// onClear={text => searchFilterFunction('')}
-						placeholder='Type Here...'
-						// value={search}
-					/>
+			{user ? (
+				<View style={styles.searchbar}>
+					<View style={styles.search}>
+						<SearchBar
+							round
+							clearIcon={{ size: 24 }}
+							searchIcon={{ size: 24 }}
+							// onChangeText={text => searchFilterFunction(text)}
+							// onClear={text => searchFilterFunction('')}
+							placeholder='Type Here...'
+							// value={search}
+						/>
+					</View>
+					<View style={styles.filter}>
+						<Text style={styles.textFilter}>Filter</Text>
+						{/* <Icon name='filter' size='24' /> */}
+					</View>
 				</View>
-				<View style={styles.filter}>
-					<Text style={styles.textFilter}>Filter</Text>
-					{/* <Icon name='filter' size='24' /> */}
-				</View>
-			</View>
-			<FlatList
-				data={DATA}
-				renderItem={renderItem}
-				keyExtractor={item => item.id}
-			/>
+			) : (
+				<RenderEmpty />
+			)}
+			{user && (
+				<FlatList
+					data={isLoading ? null : history}
+					renderItem={renderItem}
+					keyExtractor={item => item.id}
+				/>
+			)}
 		</SafeAreaView>
 	);
 };
@@ -198,6 +290,15 @@ const styles = StyleSheet.create({
 		fontSize: 11,
 		fontWeight: 'bold',
 		color: '#3C4043',
+	},
+	emptyWrapper: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	emptyImage: {
+		height: 200,
+		width: width - 50,
 	},
 });
 

@@ -1,40 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
 import Header from 'components/items/heads/Header';
 import { LoginButton } from 'components/items';
 import { TouchableOpacity } from 'react-native';
 import { colors } from 'constants/global';
+import auth from '@react-native-firebase/auth';
 const defaultImage = require('../../../assets/images/rgt_image.jpg');
 
 const PersonalEdit = ({ navigation }) => {
+	const [user, setUser] = useState();
+
+	useEffect(() => {
+		const getUser = async () => {
+			await setUser(auth().currentUser);
+		};
+		getUser();
+		console.log(user);
+		// if (!user) {
+		// 	navigation.navigate('Login');
+		// }
+	}, []);
+
 	return (
 		<SafeAreaView style={styles.container}>
-			<Header navigation={navigation} back title='Profile' />
+			<Header navigation={navigation} back title='User Information' />
 			<View style={styles.wrapperContent}>
-				<Image style={styles.imagePersonal} source={defaultImage} />
+				<Image
+					style={styles.imagePersonal}
+					source={user ? { uri: user.photoURL } : defaultImage}
+				/>
 				<View style={styles.contentView}>
 					<View style={styles.rowView}>
 						<Text style={styles.leftText}>Name</Text>
-						<Text style={styles.rightText}>Your Name</Text>
+						<Text style={styles.rightText}>
+							{user ? user.displayName : 'Your name'}
+						</Text>
 					</View>
 					<View style={styles.rowView}>
 						<Text style={styles.leftText}>Date</Text>
 						<Text style={styles.rightText}>01/01/1999</Text>
 					</View>
 					<View style={styles.rowView}>
-						<Text style={styles.leftText}>Address</Text>
-						<Text style={styles.rightText}>Da Nang</Text>
+						<Text style={styles.leftText}>Email</Text>
+						<Text style={styles.rightText}>
+							{user ? user.email : 'email@ex.com'}
+						</Text>
 					</View>
 					<View style={styles.rowView}>
 						<Text style={styles.leftText}>Phone</Text>
-						<Text style={styles.rightText}>09 0923 2342</Text>
+						<Text style={styles.rightText}>
+							{user
+								? user.phoneNumber
+									? user.phoneNumber
+									: '---- --- ---'
+								: '---- --- ---'}
+						</Text>
 					</View>
 					<View style={styles.rowView}>
-						<Text style={styles.leftText}>Sex</Text>
-						<Text style={styles.rightText}>Male</Text>
+						<Text style={styles.leftText}>Provider</Text>
+						<Text style={styles.rightText}>
+							{user ? user.providerData[0].providerId : ''}
+						</Text>
 					</View>
 					<TouchableOpacity
-						style={styles.btn}
+						disabled
+						style={[styles.btn, { backgroundColor: '#9DADA5' }]}
 						onPress={() => navigation.navigate('PersonalSave')}>
 						<Text style={styles.textBtn}>Edit</Text>
 					</TouchableOpacity>

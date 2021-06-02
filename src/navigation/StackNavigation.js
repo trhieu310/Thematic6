@@ -67,6 +67,7 @@ const ScanStackNavigator = () => {
 				headerShown: false,
 			}}>
 			<Stack.Screen name='Scan' component={Scanner} />
+			<Stack.Screen name='Detail' component={Detail} />
 		</Stack.Navigator>
 	);
 };
