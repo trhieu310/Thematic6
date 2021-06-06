@@ -23,11 +23,15 @@ import { key, apiCall } from '../../constants/global';
 import useLocationPermission from 'hook/useLocationPermission';
 import { Icon } from 'react-native-elements';
 import { SearchItem } from 'components/items';
+import database from '@react-native-firebase/database';
+import { databaseUrl } from '../../constants/global';
+import { TextInput } from 'react-native';
+import { Keyboard } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const resultImg = require('../../../assets/address_32px.png');
 
-const Search = ({ navigation }) => {
+const Search = ({ navigation, route }) => {
 	const [region, setRegion] = useState({
 		latitude: 15.9737549,
 		longitude: 108.2493927,
@@ -62,6 +66,34 @@ const Search = ({ navigation }) => {
 		setIsMarker(true);
 	};
 
+	const loadSearch = () => {
+		Keyboard.dismiss();
+		const placeId = 'ChIJh-6MUZZXSjER23hUyLywxlU';
+		const ref = databaseUrl.ROOT + databaseUrl.PLACE + placeId;
+		const tempSearch = [];
+		database()
+			.ref(ref)
+			.once('value')
+			.then(snapshot => {
+				const data = snapshot.val();
+				console.log(data);
+				setLocation({
+					latitude: parseFloat(data.lat),
+					longitude: parseFloat(data.long),
+				});
+				setRegion({
+					latitude: parseFloat(data.lat),
+					longitude: parseFloat(data.long),
+					latitudeDelta: 0.0922,
+					longitudeDelta: 0.0421,
+				});
+				tempSearch.push(data);
+				setIsMarker(true);
+				setSearchResult(tempSearch);
+			});
+		console.log(tempSearch);
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<Header navigation={navigation} searchBar back />
@@ -73,12 +105,12 @@ const Search = ({ navigation }) => {
 					}}
 					onPress={(data, details = null) => {
 						console.log(data, details);
-						fetchDataMaps(data.place_id);
-						setTextSearch('');
+						// fetchDataMaps(data.place_id);
+						// setTextSearch('');
 					}}
-					GooglePlacesDetailsQuery={{
-						key: key.API_PLACE,
-					}}
+					// GooglePlacesDetailsQuery={{
+					// 	key: key.API_PLACE,
+					// }}
 					query={{
 						key: key.API_PLACE,
 						language: 'en',
@@ -87,7 +119,9 @@ const Search = ({ navigation }) => {
 						onChangeText: textSearch => setTextSearch(textSearch),
 					}}
 				/>
-				<TouchableOpacity style={styles.wrapperSearchBarButton}>
+				<TouchableOpacity
+					style={styles.wrapperSearchBarButton}
+					onPress={() => loadSearch()}>
 					<Image
 						source={require('../../../assets/search_26px.png')}
 						style={styles.imageSearch}
@@ -121,13 +155,13 @@ const Search = ({ navigation }) => {
 					</View>
 					{searchResult.length > 0 ? (
 						<ScrollView>
-							<SearchItem
-								onPress={() => navigation.navigate('Detail')}
-							/>
-							<SearchItem />
-							<SearchItem />
-							<SearchItem />
-							<SearchItem />
+							{searchResult.map((e, i) => {
+								return <SearchItem key={e.placeId}
+									navigation={navigation}
+									item={e}
+								/>
+							})}
+							
 						</ScrollView>
 					) : (
 						<ScrollView>
@@ -228,6 +262,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: 120,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 });
