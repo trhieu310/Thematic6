@@ -73,7 +73,7 @@ const Detail = ({ navigation, image, route }) => {
 				<View style={styles.imageView}>
 					<Image
 						style={styles.image}
-						source={image ? imgae : defaultImage}
+						source={item.uri ? {uri: item.uri} : defaultImage}
 					/>
 				</View>
 				<View style={styles.headerView}>

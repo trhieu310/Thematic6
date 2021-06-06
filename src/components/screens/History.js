@@ -25,8 +25,7 @@ const DATA = [
 		title2: 'Quảng Ninh',
 		time1: '15:05:27',
 		time2: '25/07/2017',
-		uri:
-			'https://owa.bestprice.vn/images/tours/uploads/ha-long-tuan-chau-2-ngay-1-dem-5e5642a3b1b03.jpg',
+		uri: 'https://owa.bestprice.vn/images/tours/uploads/ha-long-tuan-chau-2-ngay-1-dem-5e5642a3b1b03.jpg',
 	},
 	{
 		id: '2',
@@ -34,8 +33,7 @@ const DATA = [
 		title2: 'Đà Nẵng',
 		time1: '09:05:00',
 		time2: '23/06/2017',
-		uri:
-			'https://danangfantasticity.com/wp-content/uploads/2015/09/deo-hai-van-01-1024x768.jpg',
+		uri: 'https://danangfantasticity.com/wp-content/uploads/2015/09/deo-hai-van-01-1024x768.jpg',
 	},
 	{
 		id: '3',
@@ -43,8 +41,7 @@ const DATA = [
 		title2: 'Gia Lai',
 		time1: '11:05:27',
 		time2: '05/03/2017',
-		uri:
-			'https://baoquocte.vn/stores/news_dataimages/hoangha/092016/16/09/091410_Nho-playcu1.jpg',
+		uri: 'https://baoquocte.vn/stores/news_dataimages/hoangha/092016/16/09/091410_Nho-playcu1.jpg',
 	},
 	{
 		id: '4',
@@ -52,8 +49,7 @@ const DATA = [
 		title2: 'Kiên Giang',
 		time1: '08:23:56',
 		time2: '11/01/2017',
-		uri:
-			'https://vneconomy.mediacdn.vn/thumb_w/640/2019/8/21/phu-quoc-1566354996006720372424-crop-156635500015546959117.jpeg',
+		uri: 'https://vneconomy.mediacdn.vn/thumb_w/640/2019/8/21/phu-quoc-1566354996006720372424-crop-156635500015546959117.jpeg',
 	},
 	{
 		id: '5',
@@ -61,8 +57,7 @@ const DATA = [
 		title2: 'Quảng Ninh',
 		time1: '15:05:27',
 		time2: '25/07/2017',
-		uri:
-			'https://owa.bestprice.vn/images/tours/uploads/ha-long-tuan-chau-2-ngay-1-dem-5e5642a3b1b03.jpg',
+		uri: 'https://owa.bestprice.vn/images/tours/uploads/ha-long-tuan-chau-2-ngay-1-dem-5e5642a3b1b03.jpg',
 	},
 	{
 		id: '6',
@@ -70,8 +65,7 @@ const DATA = [
 		title2: 'Đà Nẵng',
 		time1: '09:05:00',
 		time2: '23/06/2017',
-		uri:
-			'https://danangfantasticity.com/wp-content/uploads/2015/09/deo-hai-van-01-1024x768.jpg',
+		uri: 'https://danangfantasticity.com/wp-content/uploads/2015/09/deo-hai-van-01-1024x768.jpg',
 	},
 	{
 		id: '7',
@@ -79,8 +73,7 @@ const DATA = [
 		title2: 'Gia Lai',
 		time1: '11:05:27',
 		time2: '05/03/2017',
-		uri:
-			'https://baoquocte.vn/stores/news_dataimages/hoangha/092016/16/09/091410_Nho-playcu1.jpg',
+		uri: 'https://baoquocte.vn/stores/news_dataimages/hoangha/092016/16/09/091410_Nho-playcu1.jpg',
 	},
 	{
 		id: '8',
@@ -88,26 +81,27 @@ const DATA = [
 		title2: 'Kiên Giang',
 		time1: '08:23:56',
 		time2: '11/01/2017',
-		uri:
-			'https://vneconomy.mediacdn.vn/thumb_w/640/2019/8/21/phu-quoc-1566354996006720372424-crop-156635500015546959117.jpeg',
+		uri: 'https://vneconomy.mediacdn.vn/thumb_w/640/2019/8/21/phu-quoc-1566354996006720372424-crop-156635500015546959117.jpeg',
 	},
 ];
 
-const Item = ({ title1, title2, time1, time2, image }) => (
-	<View style={styles.item}>
-		<Image source={image} style={styles.image} />
-		<View style={styles.text}>
-			<View style={styles.contilte}>
-				<Text style={styles.title}>{title1}</Text>
-				<Text style={styles.title}>{title2}</Text>
-			</View>
-			<View style={styles.contime}>
-				<Text style={styles.time}>{time1}</Text>
-				<Text style={styles.time}>{time2}</Text>
+const Item = ({ title1, title2, time1, time2, image }) => {
+	return (
+		<View style={styles.item}>
+			<Image source={{ uri: image }} style={styles.image} />
+			<View style={styles.text}>
+				<View style={styles.contilte}>
+					<Text style={styles.title}>{title1}</Text>
+					<Text style={styles.title}>{title2}</Text>
+				</View>
+				<View style={styles.contime}>
+					<Text style={styles.time}>{time1}</Text>
+					<Text style={styles.time}>{time2}</Text>
+				</View>
 			</View>
 		</View>
-	</View>
-);
+	);
+};
 
 const History = ({ navigation }) => {
 	const [user, setUser] = useState(auth().currentUser);
@@ -145,6 +139,8 @@ const History = ({ navigation }) => {
 
 		const getPlace = async () => {
 			setIsLoading(true);
+
+			getHistory();
 			const ref = databaseUrl.ROOT + databaseUrl.PLACE;
 			let te = [];
 			if (listHist.length > 0) {
@@ -152,7 +148,7 @@ const History = ({ navigation }) => {
 				listHist.forEach(e => {
 					const d = database()
 						.ref(ref + e.placeId)
-						.on('value' ,snapshot => {
+						.on('value', snapshot => {
 							const ts = snapshot.toJSON();
 							console.log(ts);
 							te.push({
@@ -172,10 +168,9 @@ const History = ({ navigation }) => {
 		};
 
 		checkUser();
-		getHistory();
-		getPlace();
-		return history;
-	}, []);
+		const timeoute = setTimeout(() => getPlace(), 21000);
+		return () => clearTimeout(timeoute);
+	}, [history]);
 
 	const RenderEmpty = () => {
 		return (
@@ -197,7 +192,7 @@ const History = ({ navigation }) => {
 			title2={item.city}
 			time1={item.time1}
 			time2={item.time2}
-			image={{ uri: item.uri }}
+			image={item.uri}
 		/>
 	);
 
@@ -228,9 +223,10 @@ const History = ({ navigation }) => {
 			)}
 			{user && (
 				<FlatList
-					data={isLoading ? null : history}
+					data={history}
 					renderItem={renderItem}
-					keyExtractor={item => item.id}
+					key={item => item.Id}
+					keyExtractor={item => item.Id}
 				/>
 			)}
 		</SafeAreaView>
@@ -262,10 +258,19 @@ const styles = StyleSheet.create({
 		height: (13 / 100) * height,
 		flex: 1,
 		flexDirection: 'column',
-		marginTop: '1.5%',
+		// marginTop: '1.5%',
 		backgroundColor: '#F2DFC3',
 		borderBottomWidth: 1,
 		borderBottomColor: '#000',
+		justifyContent: 'flex-end',
+		marginVertical: 7,
+	},
+	image: {
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+		top: 0,
+		left: 0,
 	},
 	text: {
 		flexDirection: 'row',
@@ -277,7 +282,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: 'bold',
 		fontFamily: 'roboto',
-		color: '#3C4043',
+		color: '#ffffff',
 	},
 	contilte: {
 		alignItems: 'flex-start',
@@ -289,7 +294,7 @@ const styles = StyleSheet.create({
 	time: {
 		fontSize: 11,
 		fontWeight: 'bold',
-		color: '#3C4043',
+		color: '#ffffff',
 	},
 	emptyWrapper: {
 		flex: 1,

@@ -5,34 +5,36 @@ const defaultImage = require('../../../assets/images/rgt_image.jpg');
 
 const SearchItem = ({
 	style,
-	image,
-	object = { title: '', address: '', content: '' },
 	titleStyle,
 	addressStyle,
 	contentStyle,
 	onPress,
+	item,
+	navigation
 }) => {
 	const renderTextContent = text => {
 		return text.substring(0, text.length > 70 ? 70 : text.length) + '...';
 	};
 	return (
-		<TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+		<TouchableOpacity style={[styles.container, style]} onPress={() => navigation.navigate('Detail', {item: item})}>
 			<View style={styles.imageView}>
 				<Image
 					style={styles.image}
-					source={image ? image : defaultImage}
+					source={item.uri ? { uri: item.uri } : defaultImage}
 				/>
 			</View>
 			<View style={styles.textView}>
 				<Text style={[styles.title, titleStyle]}>
-					{object.title ? object.title : 'Ten dia danh'}
+					{item.name ? item.name : 'Ten dia danh'}
 				</Text>
 				<Text style={[styles.address, addressStyle]}>
-					{object.address ? object.address : 'Dia chi'}
+					{item.address.longAddress
+						? item.address.longAddress.length > 27 ? item.address.longAddress.substr(0, 27) + '...' : item.address.longAddress
+						: 'Dia chi'}
 				</Text>
 				<Text style={[styles.content, contentStyle]}>
-					{object.content
-						? renderTextContent(object.content)
+					{item.description
+						? renderTextContent(item.description)
 						: 'Noi dung rut gon cua dia danh'}
 				</Text>
 			</View>
@@ -79,6 +81,7 @@ const styles = StyleSheet.create({
 	},
 	textView: {
 		paddingStart: 7,
+		flex: 1,
 	},
 	title: {
 		fontSize: 18,
